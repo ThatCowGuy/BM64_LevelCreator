@@ -1,0 +1,10 @@
+C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.csproj.AssemblyReference.cache
+C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.Form1.resources
+C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.Properties.Resources.resources
+C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.csproj.GenerateResource.cache
+C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.csproj.CoreCompileInputs.cache
+C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\BM64_LevelCreator.exe.config
+C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\BM64_LevelCreator.exe
+C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\BM64_LevelCreator.pdb
+C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.exe
+C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.pdb

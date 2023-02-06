@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33130.400
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BM64_LevelCreator", "BM64_LevelCreator\BM64_LevelCreator.csproj", "{B4123DEA-645E-4A2C-9F5A-1F4C6A74A575}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4123DEA-645E-4A2C-9F5A-1F4C6A74A575}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4123DEA-645E-4A2C-9F5A-1F4C6A74A575}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4123DEA-645E-4A2C-9F5A-1F4C6A74A575}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4123DEA-645E-4A2C-9F5A-1F4C6A74A575}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AD71561A-4681-43D9-9983-4FBA02BFB824}
+	EndGlobalSection
+EndGlobal
