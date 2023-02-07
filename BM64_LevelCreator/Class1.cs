@@ -11,7 +11,7 @@ namespace BM64_LevelCreator
     class Tile
     {
         // A Tile is 10x10 units wide
-        public static int DIM = 30;
+        public static int DIM = 32;
         public int type = 0;
     }
 

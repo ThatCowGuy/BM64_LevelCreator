@@ -14,14 +14,15 @@ namespace BM64_LevelCreator
     public partial class Form1 : Form
     {
         private Map current_map = new Map();
+        private List<Image> images = new List<Image>();
         // OTM == Orthographics Transformation Matrix
         public Matrix OTM(float offset_x, float offset_y, float shear_x, float shear_y)
         {
             Matrix m = new Matrix();
-            float scalefac = 0.6f;
-            m.Scale(1f*scalefac, 1/2f*scalefac);
+            float scalefac = 0.5f;
             m.Translate(offset_x, offset_y);
             m.Shear(shear_x, shear_y);
+            m.Scale(1f*scalefac, 1/4f*scalefac);
             m.Translate(-offset_x, -offset_y);
             return m;
         }
@@ -40,6 +41,11 @@ namespace BM64_LevelCreator
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/green.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/yellow.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/blue.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/red.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(Bitmap.FromFile("../../assets/cowgirl.jpg"));
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -47,6 +53,7 @@ namespace BM64_LevelCreator
             // Creating a Graphics Object when the "Paint" thing in the Form is called
             // https://learn.microsoft.com/de-de/dotnet/api/system.drawing.drawing2d.matrix?view=dotnet-plat-ext-7.0
             Graphics g = e.Graphics;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
             // Brushes are for Filling
             Brush mybrush1 = new SolidBrush(Color.Lime);
@@ -63,7 +70,7 @@ namespace BM64_LevelCreator
             // DrawImage either takes a Point (X,Y) to draw Image in original Size 
             // or a Rect(X,Y,W,H) to draw it at (X,Y) and stretch it
 
-            g.DrawImage(Bitmap.FromFile("../../assets/cowgirl.jpg"), new PointF(250, 100));
+            g.DrawImage(images[4], new PointF(250, 100));
 
             Font myfont = new Font("Arial", 16);
             g.DrawString("Wow", myfont, mybrush2, new PointF(400, 200));
@@ -84,6 +91,9 @@ namespace BM64_LevelCreator
                 {
                     int index = x + (y * Section.DIM);
                     current_map.layers[0].sections[0].tiles[index].type = ((x + y) % 2);
+
+                    if (y == 6 && x == 2)
+                        current_map.layers[0].sections[0].tiles[index].type = 1;
                 }
             }
 
@@ -95,8 +105,12 @@ namespace BM64_LevelCreator
                     int index = x + (y * Section.DIM);
                     int tiletype = current_map.layers[0].sections[0].tiles[index].type;
 
-                    if (tiletype == 0) g.FillRectangle(mybrush1, (x*Tile.DIM), (y*Tile.DIM), Tile.DIM, Tile.DIM);
-                    if (tiletype == 1) g.FillRectangle(mybrush2, (x * Tile.DIM), (y * Tile.DIM), Tile.DIM, Tile.DIM);
+                    Rectangle loc = new Rectangle((x * Tile.DIM), (y * Tile.DIM), Tile.DIM, Tile.DIM);
+                    //if (tiletype == 0) g.FillRectangle(mybrush1, (x * Tile.DIM), (y * Tile.DIM), Tile.DIM, Tile.DIM);
+                    //if (tiletype == 1) g.FillRectangle(mybrush2, (x * Tile.DIM), (y * Tile.DIM), Tile.DIM, Tile.DIM);
+                    if (tiletype == 0) g.DrawImage(images[0], loc);
+                    if (tiletype == 1) g.DrawImage(images[1], loc);
+
                 }
             }
         }
@@ -117,6 +131,7 @@ namespace BM64_LevelCreator
 
             // Creating a Graphics Object when the "Paint" thing in the Form is called
             Graphics g = e.Graphics;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
             // Brushes are for Filling
             Brush mybrush1 = new SolidBrush(Color.Lime);
@@ -124,7 +139,11 @@ namespace BM64_LevelCreator
             // Pens are for Lines
             Pen mypen = new Pen(Color.Red);
 
-            g.Transform = OTM(200, 200, -1.0f, 0.0f);
+            int visual_dz = 20;
+
+
+            // translations here are literal / wrt panel coords
+            g.Transform = OTM(130, 150+visual_dz*1, -1.0f, 0.0f);
             // Draw the Section
             for (int x = 0; x < Section.DIM; x++)
             {
@@ -133,12 +152,38 @@ namespace BM64_LevelCreator
                     int index = x + (y * Section.DIM);
                     int tiletype = current_map.layers[0].sections[0].tiles[index].type;
 
-                    if (tiletype == 0) g.FillRectangle(mybrush1, (x * Tile.DIM), (y * Tile.DIM), Tile.DIM, Tile.DIM);
-                    if (tiletype == 1) g.FillRectangle(mybrush2, (x * Tile.DIM), (y * Tile.DIM), Tile.DIM, Tile.DIM);
+                    Rectangle loc = new Rectangle((x * Tile.DIM), (y * Tile.DIM), Tile.DIM, Tile.DIM);
+                    // translations here are within the sheared coords
+                    //if (tiletype == 0) g.FillRectangle(mybrush1, (x * Tile.DIM), (y * Tile.DIM)+ visual_dz, Tile.DIM, Tile.DIM);
+                    //if (tiletype == 1) g.FillRectangle(mybrush2, (x * Tile.DIM), (y * Tile.DIM)+ visual_dz, Tile.DIM, Tile.DIM);
+                    if (tiletype == 0) g.DrawImage(images[0], loc);
+                    if (tiletype == 1) g.DrawImage(images[1], loc);
                 }
             }
 
-            g.DrawImage(Bitmap.FromFile("../../assets/cowgirl.jpg"), new PointF(0, 0));
+            g.Transform = OTM(130, 150+visual_dz*0, -1.0f, 0.0f);
+            // Draw the Section
+            for (int x = 0; x < Section.DIM; x++)
+            {
+                for (int y = 0; y < Section.DIM; y++)
+                {
+                    int index = x + (y * Section.DIM);
+                    int tiletype = current_map.layers[0].sections[0].tiles[index].type;
+
+                    PointF loc = new PointF((x * Tile.DIM), (y * Tile.DIM));
+                    //if (tiletype == 0) g.FillRectangle(mybrush1, (x * Tile.DIM), (y * Tile.DIM), Tile.DIM, Tile.DIM);
+                    //if (tiletype == 1) g.FillRectangle(mybrush2, (x * Tile.DIM), (y * Tile.DIM), Tile.DIM, Tile.DIM);
+                    if (tiletype == 0) g.DrawImage(images[0], loc);
+                    if (tiletype == 1) g.DrawImage(images[1], loc);
+                }
+            }
+
+            g.DrawImage(images[4], new PointF(0, 0));
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -8,3 +8,13 @@ C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\BM64_L
 C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\BM64_LevelCreator.pdb
 C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.exe
 C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.pdb
+\\wsl.localhost\Ubuntu-20.04\home\cow\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\BM64_LevelCreator.exe.config
+\\wsl.localhost\Ubuntu-20.04\home\cow\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\BM64_LevelCreator.exe
+\\wsl.localhost\Ubuntu-20.04\home\cow\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\BM64_LevelCreator.pdb
+\\wsl.localhost\Ubuntu-20.04\home\cow\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.csproj.AssemblyReference.cache
+\\wsl.localhost\Ubuntu-20.04\home\cow\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.Form1.resources
+\\wsl.localhost\Ubuntu-20.04\home\cow\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.Properties.Resources.resources
+\\wsl.localhost\Ubuntu-20.04\home\cow\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.csproj.GenerateResource.cache
+\\wsl.localhost\Ubuntu-20.04\home\cow\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.csproj.CoreCompileInputs.cache
+\\wsl.localhost\Ubuntu-20.04\home\cow\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.exe
+\\wsl.localhost\Ubuntu-20.04\home\cow\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.pdb
