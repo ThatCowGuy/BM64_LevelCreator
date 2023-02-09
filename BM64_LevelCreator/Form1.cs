@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.Odbc;
 
 namespace BM64_LevelCreator
 {
@@ -58,17 +59,29 @@ namespace BM64_LevelCreator
         {
             Tile.init_images();
 
-            int section_MemSize = 2 + (Section.DIM * Section.DIM) * 2; // 2 Header Bytes, + 8x8 Tiles * 2 Bytes each
             System.Console.WriteLine("Reading File...");
             // https://github.com/Coockie1173/BomerhackerThree/blob/main/FileList.txt
             //byte[] input = System.IO.File.ReadAllBytes("../../assets/littleroom.bin");
             //byte[] input = System.IO.File.ReadAllBytes("../../assets/RM3_MainA.bin");
-            byte[] input = System.IO.File.ReadAllBytes("../../assets/GG1_MainB.bin"); 
+            byte[] input = System.IO.File.ReadAllBytes("../../assets/GG1_MainB.bin");
             //byte[] input = System.IO.File.ReadAllBytes("../../assets/Table 13_588.bin");
 
             // first of all, calculate where the layers start (this varies a bit, so we need to do this first)
+            LoadMapfile(input);
+        }
+
+        private void LoadMapfile(byte[] input)
+        {
+            current_map = new Map();
+            images = new List<Image>();
+            selected_layer = 0;
+            selected_section_x = 0;
+            selected_section_y = 0;
+            selected_tile = new Tile(1);
+
             int layer_cnt = input[0];
             int[] layer_offsets = new int[layer_cnt];
+            int section_MemSize = 2 + (Section.DIM * Section.DIM) * 2; // 2 Header Bytes, + 8x8 Tiles * 2 Bytes each
             layer_offsets[0] = 5; // always the case
             for (int i = 1; i < layer_cnt; i++)
             {
@@ -138,6 +151,8 @@ namespace BM64_LevelCreator
                     }
                 }
             }
+
+            RefreshVisuals();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -382,11 +397,26 @@ namespace BM64_LevelCreator
             if (numericUpDown1.Value < 0) numericUpDown1.Value = 0;
             if (numericUpDown1.Value >= current_map.layer_cnt) numericUpDown1.Value = (current_map.layer_cnt - 1);
 
-            selected_layer = (int) numericUpDown1.Value;
+            selected_layer = (int)numericUpDown1.Value;
 
+            RefreshVisuals();
+        }
+
+        private void RefreshVisuals()
+        {
             MapViewPanel.Refresh();
             LayerOverviewPanel.Refresh();
             SectionViewPanel.Refresh();
+        }
+
+        private void LoadFileButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog OFD = new OpenFileDialog();
+            OFD.Filter = "*.bin|*.bin";
+            if(OFD.ShowDialog() == DialogResult.OK)
+            {
+                LoadMapfile(File.ReadAllBytes(OFD.FileName));
+            }
         }
     }
 }
