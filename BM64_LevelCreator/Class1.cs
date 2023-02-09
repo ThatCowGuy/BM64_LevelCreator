@@ -8,14 +8,81 @@ using System.Drawing.Drawing2D;
 
 namespace BM64_LevelCreator
 {
-    class Tile
+    public class Tile
     {
         // A Tile is 10x10 units wide
         public static int DIM = 32;
-        public int type = 0;
+        public static List<Image> images = new List<Image>();
+
+        public int image_ID = 0;
+        public byte[] nibbles = new byte[4];
+
+        public enum Nibble
+        {
+            ACTION_ID,
+            UNK_2,
+            OBJECT_ID,
+            COLLISION
+        }
+
+        public Tile(int image_ID)
+        {
+            this.image_ID = image_ID;
+        }
+
+        public enum CollisionID
+        {
+            AIR,
+            FLOOR,
+            WARP,
+            RAMP_D,
+            RAMP_U,
+            RAMP_R,
+            RAMP_L,
+            WALL_C_UL,
+            WALL_C_DL,
+            UNK_9,
+            EFFECT_A,
+            EFFECT_B,
+            WALL_C_UR,
+            WALL_C_DR,
+            UNK_E,
+            WALL
+        }
+        public static void init_images() // now sorted by the actual nibble value of the coll ID
+        {
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/Floor.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/Object.png"), new Size(DIM, DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/RampD.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/RampU.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/RampR.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/RampL.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/WallCorner_UL.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/WallCorner_DL.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(Bitmap.FromFile("../../assets/cowgirl.jpg"));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/Action.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/Action.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/WallCorner_UR.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/WallCorner_DR.png"), new Size(Tile.DIM, Tile.DIM)));
+            images.Add(Bitmap.FromFile("../../assets/cowgirl.jpg"));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/Wall.png"), new Size(Tile.DIM, Tile.DIM)));
+        }
+
+        public int concat_nibbles()
+        {
+            return (((nibbles[0] * 0x10) + nibbles[1]) * 0x10 + nibbles[2]) * 0x10 + nibbles[3];
+        }
+
+        public Tile clone()
+        {
+            Tile clone = new Tile(this.image_ID);
+            for (int i = 0; i <= 3; i++)
+                clone.nibbles[i] = this.nibbles[i];
+            return clone;
+        }
     }
 
-    class Section : IComparable<Section>
+    public class Section : IComparable<Section>
     {
         // A Section consists of 8x8 Tiles and has an (x,y) coord
         public static int DIM = 8;
@@ -30,14 +97,14 @@ namespace BM64_LevelCreator
 
             this.tiles = new Tile[DIM * DIM];
             for (int i = 0; i < DIM * DIM; i++)
-                this.tiles[i] = new Tile();
+                this.tiles[i] = new Tile(0);
         }
         public int CompareTo(Section comp)
         {
             return 1;
         }
     }
-    class Layer
+    public class Layer
     {
         // A Layer has a z-coord for hight and contains several Sections
         public int index = 0;
@@ -83,7 +150,7 @@ namespace BM64_LevelCreator
         }
     }
 
-    class Map
+    public class Map
     {
         public int layer_cnt = 0;
         public int hight = 0;
@@ -106,13 +173,13 @@ namespace BM64_LevelCreator
             return max;
         }
 
-        public void put_tile(int layer, Point section, Point coord, int type)
+        public Tile get_Tile_At(int layer, Point section, Point coord)
         {
             // get a hold of the correct section first
             Layer chosen_layer = this.layers[layer];
             Section chosen_section = chosen_layer.sections[(chosen_layer.x_extent * section.Y) + section.X];
-            // then place the tile there
-            chosen_section.tiles[(Section.DIM * coord.Y) + coord.X].type = type;
+            // then return the tile
+            return chosen_section.tiles[(Section.DIM * coord.Y) + coord.X];
         }
     }
 }
