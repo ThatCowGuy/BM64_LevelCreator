@@ -53,22 +53,22 @@ namespace BM64_LevelCreator
         public static void init_images() // now sorted by the actual nibble value of the coll ID
         {
             Size imgSize = new Size(Tile.DIM, Tile.DIM);
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/Air.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/Floor.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/Object.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/RampD.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/RampU.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/RampR.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/RampL.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/WallCorner_UL.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/WallCorner_DL.png"), imgSize));
-            images.Add(Bitmap.FromFile("../../assets/cowgirl.jpg"));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/Action.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/Action.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/WallCorner_UR.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/WallCorner_DR.png"), imgSize));
-            images.Add(Bitmap.FromFile("../../assets/cowgirl.jpg"));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/Wall.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Air.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Floor.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Object.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampD.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampU.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampR.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampL.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_UL.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_DL.png"), imgSize));
+            images.Add(Bitmap.FromFile("../../assets/images/cowgirl.jpg"));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Action.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Action.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_UR.png"), imgSize));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_DR.png"), imgSize));
+            images.Add(Bitmap.FromFile("../../assets/images/cowgirl.jpg"));
+            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Wall.png"), imgSize));
         }
 
         public int concat_nibbles()

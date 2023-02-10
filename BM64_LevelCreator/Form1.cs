@@ -72,10 +72,10 @@ namespace BM64_LevelCreator
             Tile.init_images();
             
             // https://github.com/Coockie1173/BomerhackerThree/blob/main/FileList.txt
-            // string filename = "../../assets/littleroom.bin";
-            // string filename = "../../assets/RM3_MainA.bin";
-            string filename = "../../assets/GG1_MainB.bin";
-            // string filename = "../../assets/Table 13_588.bin";
+            // string filename = "../../assets/images/littleroom.bin";
+            // string filename = "../../assets/images/RM3_MainA.bin";
+            string filename = "../../assets/maps/GG1_MainB.bin";
+            // string filename = "../../assets/images/Table 13_588.bin";
 
             current_map.load_from_File(filename);
         }
@@ -306,18 +306,12 @@ namespace BM64_LevelCreator
         private void LoadFileButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog OFD = new OpenFileDialog();
+            OFD.InitialDirectory = "../../assets/maps/";
             OFD.Filter = "*.bin|*.bin";
             if(OFD.ShowDialog() == DialogResult.OK)
             {
-                //LoadMapfile(File.ReadAllBytes(OFD.FileName));
-
-                // https://github.com/Coockie1173/BomerhackerThree/blob/main/FileList.txt
-                // string filename = "../../assets/littleroom.bin";
-                // string filename = "../../assets/RM3_MainA.bin";
-                string filename = "../../assets/GG1_MainB.bin";
-                // string filename = "../../assets/Table 13_588.bin";
-
-                current_map.load_from_File(filename);
+                current_map.load_from_File(OFD.FileName);
+                RefreshVisuals();
             }
         }
         private void button1_Click(object sender, EventArgs e)

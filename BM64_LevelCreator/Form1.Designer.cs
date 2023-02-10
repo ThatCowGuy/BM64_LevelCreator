@@ -31,6 +31,7 @@ namespace BM64_LevelCreator
         {
             this.MapViewPanel = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.LoadFileButton = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
@@ -41,12 +42,11 @@ namespace BM64_LevelCreator
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.LayerViewPanel = new System.Windows.Forms.Panel();
-            this.LoadFileButton = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -59,10 +59,9 @@ namespace BM64_LevelCreator
             // 
             this.MapViewPanel.BackColor = System.Drawing.Color.DimGray;
             this.MapViewPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.MapViewPanel.Location = new System.Drawing.Point(4, 34);
-            this.MapViewPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.MapViewPanel.Location = new System.Drawing.Point(3, 28);
             this.MapViewPanel.Name = "MapViewPanel";
-            this.MapViewPanel.Size = new System.Drawing.Size(347, 246);
+            this.MapViewPanel.Size = new System.Drawing.Size(261, 200);
             this.MapViewPanel.TabIndex = 0;
             this.MapViewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.MapViewPanel_Paint);
             // 
@@ -74,19 +73,31 @@ namespace BM64_LevelCreator
             this.panel2.Controls.Add(this.numericUpDown1);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.MapViewPanel);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(576, 8);
-            this.panel2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.panel2.Location = new System.Drawing.Point(432, 6);
+            this.panel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(459, 316);
+            this.panel2.Size = new System.Drawing.Size(357, 257);
             this.panel2.TabIndex = 1;
+            // 
+            // LoadFileButton
+            // 
+            this.LoadFileButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LoadFileButton.Location = new System.Drawing.Point(278, 36);
+            this.LoadFileButton.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.LoadFileButton.Name = "LoadFileButton";
+            this.LoadFileButton.Size = new System.Drawing.Size(62, 34);
+            this.LoadFileButton.TabIndex = 4;
+            this.LoadFileButton.Text = "Load New Map";
+            this.LoadFileButton.UseVisualStyleBackColor = true;
+            this.LoadFileButton.Click += new System.EventHandler(this.LoadFileButton_Click);
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::BM64_LevelCreator.Properties.Resources.DPad;
-            this.pictureBox1.Location = new System.Drawing.Point(370, 106);
+            this.pictureBox1.Location = new System.Drawing.Point(278, 133);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(67, 67);
+            this.pictureBox1.Size = new System.Drawing.Size(61, 61);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 7;
             this.pictureBox1.TabStop = false;
@@ -98,18 +109,20 @@ namespace BM64_LevelCreator
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label5.Location = new System.Drawing.Point(366, 42);
+            this.label5.Location = new System.Drawing.Point(275, 81);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(51, 20);
+            this.label5.Size = new System.Drawing.Size(44, 17);
             this.label5.TabIndex = 3;
             this.label5.Text = "Layer";
             this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(270, 46);
+            this.numericUpDown1.Location = new System.Drawing.Point(278, 100);
+            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(50, 20);
+            this.numericUpDown1.Size = new System.Drawing.Size(61, 20);
             this.numericUpDown1.TabIndex = 2;
             this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
             // 
@@ -118,9 +131,10 @@ namespace BM64_LevelCreator
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label1.Location = new System.Drawing.Point(12, 11);
+            this.label1.Location = new System.Drawing.Point(9, 9);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(114, 20);
+            this.label1.Size = new System.Drawing.Size(94, 17);
             this.label1.TabIndex = 1;
             this.label1.Text = "Full Map View";
             this.label1.Click += new System.EventHandler(this.label1_Click);
@@ -128,10 +142,9 @@ namespace BM64_LevelCreator
             // SectionViewPanel
             // 
             this.SectionViewPanel.BackColor = System.Drawing.Color.DimGray;
-            this.SectionViewPanel.Location = new System.Drawing.Point(4, 34);
-            this.SectionViewPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.SectionViewPanel.Location = new System.Drawing.Point(3, 28);
             this.SectionViewPanel.Name = "SectionViewPanel";
-            this.SectionViewPanel.Size = new System.Drawing.Size(341, 315);
+            this.SectionViewPanel.Size = new System.Drawing.Size(256, 256);
             this.SectionViewPanel.TabIndex = 2;
             this.SectionViewPanel.Click += new System.EventHandler(this.SectionViewPanel_Click);
             this.SectionViewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.SectionViewPanel_Paint);
@@ -143,19 +156,18 @@ namespace BM64_LevelCreator
             this.panel4.Controls.Add(this.label4);
             this.panel4.Controls.Add(this.label2);
             this.panel4.Controls.Add(this.SectionViewPanel);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Location = new System.Drawing.Point(11, 6);
+            this.panel4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(263, 505);
+            this.panel4.Size = new System.Drawing.Size(305, 491);
             this.panel4.TabIndex = 3;
             // 
             // TileInfoPanel
             // 
             this.TileInfoPanel.BackColor = System.Drawing.Color.DimGray;
-            this.TileInfoPanel.Location = new System.Drawing.Point(5, 390);
-            this.TileInfoPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.TileInfoPanel.Location = new System.Drawing.Point(4, 317);
             this.TileInfoPanel.Name = "TileInfoPanel";
-            this.TileInfoPanel.Size = new System.Drawing.Size(341, 177);
+            this.TileInfoPanel.Size = new System.Drawing.Size(256, 144);
             this.TileInfoPanel.TabIndex = 3;
             this.TileInfoPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.TileInfoPanel_Paint);
             // 
@@ -164,9 +176,10 @@ namespace BM64_LevelCreator
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label4.Location = new System.Drawing.Point(15, 366);
+            this.label4.Location = new System.Drawing.Point(11, 297);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(129, 20);
+            this.label4.Size = new System.Drawing.Size(109, 17);
             this.label4.TabIndex = 3;
             this.label4.Text = "Current Tile Info";
             // 
@@ -175,9 +188,10 @@ namespace BM64_LevelCreator
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label2.Location = new System.Drawing.Point(15, 11);
+            this.label2.Location = new System.Drawing.Point(11, 9);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(135, 20);
+            this.label2.Size = new System.Drawing.Size(114, 17);
             this.label2.TabIndex = 2;
             this.label2.Text = "Selected Section";
             // 
@@ -188,18 +202,43 @@ namespace BM64_LevelCreator
             this.panel1.Controls.Add(this.pictureBox2);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.LayerViewPanel);
-            this.panel1.Location = new System.Drawing.Point(576, 295);
-            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.panel1.Location = new System.Drawing.Point(432, 240);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(459, 316);
+            this.panel1.Size = new System.Drawing.Size(357, 257);
             this.panel1.TabIndex = 2;
+            // 
+            // textBox1
+            // 
+            this.textBox1.BackColor = System.Drawing.Color.White;
+            this.textBox1.Enabled = false;
+            this.textBox1.Location = new System.Drawing.Point(278, 53);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(62, 20);
+            this.textBox1.TabIndex = 9;
+            this.textBox1.Text = "( 0 | 0 )";
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label6.Location = new System.Drawing.Point(274, 34);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(55, 17);
+            this.label6.TabIndex = 8;
+            this.label6.Text = "Section";
             // 
             // pictureBox2
             // 
             this.pictureBox2.Image = global::BM64_LevelCreator.Properties.Resources.DPad;
-            this.pictureBox2.Location = new System.Drawing.Point(370, 106);
+            this.pictureBox2.Location = new System.Drawing.Point(279, 83);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(67, 67);
+            this.pictureBox2.Size = new System.Drawing.Size(61, 61);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 8;
             this.pictureBox2.TabStop = false;
@@ -211,9 +250,10 @@ namespace BM64_LevelCreator
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label3.Location = new System.Drawing.Point(12, 11);
+            this.label3.Location = new System.Drawing.Point(9, 9);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(121, 20);
+            this.label3.Size = new System.Drawing.Size(103, 17);
             this.label3.TabIndex = 1;
             this.label3.Text = "Selected Layer";
             this.label3.Click += new System.EventHandler(this.label3_Click);
@@ -222,57 +262,23 @@ namespace BM64_LevelCreator
             // 
             this.LayerViewPanel.BackColor = System.Drawing.Color.DimGray;
             this.LayerViewPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.LayerViewPanel.Location = new System.Drawing.Point(4, 34);
-            this.LayerViewPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.LayerViewPanel.Location = new System.Drawing.Point(3, 28);
             this.LayerViewPanel.Name = "LayerViewPanel";
-            this.LayerViewPanel.Size = new System.Drawing.Size(347, 246);
+            this.LayerViewPanel.Size = new System.Drawing.Size(261, 200);
             this.LayerViewPanel.TabIndex = 0;
             this.LayerViewPanel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.LayerOverviewPanel_Scroll);
             this.LayerViewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.LayerOverviewPanel_Paint);
             this.LayerViewPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LayerOverviewPanel_MouseClick);
             // 
-            // LoadFileButton
-            // 
-            this.LoadFileButton.Location = new System.Drawing.Point(270, 73);
-            this.LoadFileButton.Name = "LoadFileButton";
-            this.LoadFileButton.Size = new System.Drawing.Size(50, 40);
-            this.LoadFileButton.TabIndex = 4;
-            this.LoadFileButton.Text = "Load File";
-            this.LoadFileButton.UseVisualStyleBackColor = true;
-            this.LoadFileButton.Click += new System.EventHandler(this.LoadFileButton_Click);
-            //
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label6.Location = new System.Drawing.Point(366, 42);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(65, 20);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "Section";
-            // 
-            // textBox1
-            // 
-            this.textBox1.BackColor = System.Drawing.Color.White;
-            this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(370, 65);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(67, 22);
-            this.textBox1.TabIndex = 9;
-            this.textBox1.Text = "( 0 | 0 )";
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(1088, 622);
+            this.ClientSize = new System.Drawing.Size(816, 505);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel2);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Bomberman 64 - Level Editor";
             this.Load += new System.EventHandler(this.Form1_Load);

@@ -63,16 +63,6 @@ namespace BM64_LevelCreator.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap cowgirl {
-            get {
-                object obj = ResourceManager.GetObject("cowgirl", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap DPad {
             get {
                 object obj = ResourceManager.GetObject("DPad", resourceCulture);
