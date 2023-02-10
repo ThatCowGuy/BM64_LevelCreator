@@ -309,7 +309,15 @@ namespace BM64_LevelCreator
             OFD.Filter = "*.bin|*.bin";
             if(OFD.ShowDialog() == DialogResult.OK)
             {
-                LoadMapfile(File.ReadAllBytes(OFD.FileName));
+                //LoadMapfile(File.ReadAllBytes(OFD.FileName));
+
+                // https://github.com/Coockie1173/BomerhackerThree/blob/main/FileList.txt
+                // string filename = "../../assets/littleroom.bin";
+                // string filename = "../../assets/RM3_MainA.bin";
+                string filename = "../../assets/GG1_MainB.bin";
+                // string filename = "../../assets/Table 13_588.bin";
+
+                current_map.load_from_File(filename);
             }
         }
         private void button1_Click(object sender, EventArgs e)

@@ -44,6 +44,7 @@ namespace BM64_LevelCreator
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.LayerViewPanel = new System.Windows.Forms.Panel();
+            this.LoadFileButton = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel2.SuspendLayout();
