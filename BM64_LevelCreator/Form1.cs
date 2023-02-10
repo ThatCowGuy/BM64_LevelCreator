@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.Odbc;
 
 namespace BM64_LevelCreator
 {
@@ -69,7 +70,7 @@ namespace BM64_LevelCreator
         private void Form1_Load(object sender, EventArgs e)
         {
             Tile.init_images();
-
+            
             // https://github.com/Coockie1173/BomerhackerThree/blob/main/FileList.txt
             // string filename = "../../assets/littleroom.bin";
             // string filename = "../../assets/RM3_MainA.bin";
@@ -290,13 +291,27 @@ namespace BM64_LevelCreator
             if (numericUpDown1.Value < 0) numericUpDown1.Value = 0;
             if (numericUpDown1.Value >= current_map.layer_cnt) numericUpDown1.Value = (current_map.layer_cnt - 1);
 
-            selected_layer = (int) numericUpDown1.Value;
+            selected_layer = (int)numericUpDown1.Value;
 
+            RefreshVisuals();
+        }
+
+        private void RefreshVisuals()
+        {
             MapViewPanel.Refresh();
             LayerViewPanel.Refresh();
             SectionViewPanel.Refresh();
         }
 
+        private void LoadFileButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog OFD = new OpenFileDialog();
+            OFD.Filter = "*.bin|*.bin";
+            if(OFD.ShowDialog() == DialogResult.OK)
+            {
+                LoadMapfile(File.ReadAllBytes(OFD.FileName));
+            }
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             this.MVP_x_shift++;

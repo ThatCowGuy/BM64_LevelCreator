@@ -67,11 +67,13 @@ namespace BM64_LevelCreator
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.LoadFileButton);
             this.panel2.Controls.Add(this.pictureBox1);
             this.panel2.Controls.Add(this.label5);
             this.panel2.Controls.Add(this.numericUpDown1);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.MapViewPanel);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel2.Location = new System.Drawing.Point(576, 8);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel2.Name = "panel2";
@@ -104,10 +106,9 @@ namespace BM64_LevelCreator
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(370, 67);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(4);
+            this.numericUpDown1.Location = new System.Drawing.Point(270, 46);
             this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(67, 22);
+            this.numericUpDown1.Size = new System.Drawing.Size(50, 20);
             this.numericUpDown1.TabIndex = 2;
             this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
             // 
@@ -141,10 +142,10 @@ namespace BM64_LevelCreator
             this.panel4.Controls.Add(this.label4);
             this.panel4.Controls.Add(this.label2);
             this.panel4.Controls.Add(this.SectionViewPanel);
-            this.panel4.Location = new System.Drawing.Point(13, 8);
-            this.panel4.Margin = new System.Windows.Forms.Padding(4);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(355, 591);
+            this.panel4.Size = new System.Drawing.Size(263, 505);
             this.panel4.TabIndex = 3;
             // 
             // TileInfoPanel
@@ -229,6 +230,16 @@ namespace BM64_LevelCreator
             this.LayerViewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.LayerOverviewPanel_Paint);
             this.LayerViewPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LayerOverviewPanel_MouseClick);
             // 
+            // LoadFileButton
+            // 
+            this.LoadFileButton.Location = new System.Drawing.Point(270, 73);
+            this.LoadFileButton.Name = "LoadFileButton";
+            this.LoadFileButton.Size = new System.Drawing.Size(50, 40);
+            this.LoadFileButton.TabIndex = 4;
+            this.LoadFileButton.Text = "Load File";
+            this.LoadFileButton.UseVisualStyleBackColor = true;
+            this.LoadFileButton.Click += new System.EventHandler(this.LoadFileButton_Click);
+            //
             // label6
             // 
             this.label6.AutoSize = true;
@@ -293,6 +304,7 @@ namespace BM64_LevelCreator
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Button LoadFileButton;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.TextBox textBox1;
