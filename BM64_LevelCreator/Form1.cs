@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.Odbc;
+using System.Diagnostics;
 
 namespace BM64_LevelCreator
 {
@@ -481,6 +482,49 @@ namespace BM64_LevelCreator
             this.textBox4.Text = String.Format("{0:X}", content);
             this.selected_tile.nibbles[2] = (byte)content;
             TileInfoPanel.Refresh();
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            OpenFileDialog OFD = new OpenFileDialog();
+            OFD.Filter = "*.z64|*.z64";
+
+            if (OFD.ShowDialog() == DialogResult.OK)
+            {
+                RipFiles(OFD.FileName);
+            }
+        }
+
+        private void RipFiles(string RomPath)
+        {
+            string DestDir = System.IO.Path.GetDirectoryName(RomPath);
+            DestDir = System.IO.Path.Combine(DestDir, "bm64data");
+            GlobalData.ProjectDir = DestDir;
+
+            //remove the old dump
+            if(Directory.Exists(DestDir))
+            {
+                Directory.Delete(DestDir, true);
+            }
+
+            ProcessStartInfo SI = new ProcessStartInfo();
+            SI.CreateNoWindow = true;
+            SI.UseShellExecute = false;
+            SI.FileName = GlobalData.RipperPath;
+            SI.WindowStyle = ProcessWindowStyle.Hidden;
+            SI.Arguments = "\"" + RomPath + "\"";
+
+            try
+            {
+                using (Process exeProcess = Process.Start(SI))
+                {
+                    exeProcess.WaitForExit();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Couldn't rip files!");
+            }
         }
     }
 }
