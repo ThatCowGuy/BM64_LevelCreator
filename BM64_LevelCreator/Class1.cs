@@ -12,9 +12,9 @@ namespace BM64_LevelCreator
     {
         // A Tile is 10x10 units wide
         public static int DIM = 32;
-        public static List<Image> images = new List<Image>();
+        public static List<Image> std_images = new List<Image>();
+        public static List<Image> obj_images = new List<Image>();
 
-        public int image_ID = 0;
         public byte[] nibbles = new byte[4];
 
         public enum Nibble
@@ -25,9 +25,12 @@ namespace BM64_LevelCreator
             COLLISION
         }
 
-        public Tile(int image_ID)
+        public Tile(int tiletype)
         {
-            this.image_ID = image_ID;
+            this.nibbles[0] = (byte) (tiletype / 0x1000);
+            this.nibbles[1] = (byte) ((tiletype / 0x100) % 0x10);
+            this.nibbles[2] = (byte) ((tiletype / 0x10) % 0x10);
+            this.nibbles[3] = (byte) (tiletype % 0x10);
         }
 
         public static IDictionary<int, string> CollisionID = new Dictionary<int, string>()
@@ -42,8 +45,8 @@ namespace BM64_LevelCreator
             { 0x7, "WALL_C_UL" },
             { 0x8, "WALL_C_DL" },
             { 0x9, "UNK_9" },
-            { 0xA, "EFFECT_A" },
-            { 0xB, "EFFECT_B" },
+            { 0xA, "EFFECT_1" },
+            { 0xB, "EFFECT_2" },
             { 0xC, "WALL_C_UR" },
             { 0xD, "WALL_C_DR" },
             { 0xE, "UNK_E" },
@@ -53,22 +56,24 @@ namespace BM64_LevelCreator
         public static void init_images() // now sorted by the actual nibble value of the coll ID
         {
             Size imgSize = new Size(Tile.DIM, Tile.DIM);
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Air.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Floor.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Object.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampD.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampU.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampR.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampL.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_UL.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_DL.png"), imgSize));
-            images.Add(Bitmap.FromFile("../../assets/images/cowgirl.jpg"));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Action.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Action.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_UR.png"), imgSize));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_DR.png"), imgSize));
-            images.Add(Bitmap.FromFile("../../assets/images/cowgirl.jpg"));
-            images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Wall.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Air.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Floor.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Warp.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampD.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampU.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampR.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampL.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_UL.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_DL.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/UNK_0x9.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Effect_1.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Effect_2.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_UR.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_DR.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/UNK_0xE.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Wall.png"), imgSize));
+
+            obj_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Object.png"), imgSize));
         }
 
         public int concat_nibbles()
@@ -78,11 +83,12 @@ namespace BM64_LevelCreator
 
         public Tile clone()
         {
-            Tile clone = new Tile(this.image_ID);
-            for (int i = 0; i <= 3; i++)
-                clone.nibbles[i] = this.nibbles[i];
+            Tile clone = new Tile(this.concat_nibbles());
             return clone;
         }
+
+        public int get_coll_ID() { return this.nibbles[3]; }
+        public int get_obj_ID() { return this.nibbles[2]; }
     }
 
     public class Section
@@ -123,9 +129,12 @@ namespace BM64_LevelCreator
                         int index = x + (y * Section.DIM);
                         loc.X = (x * scaled_TileDIM);
                         loc.Y = (y * scaled_TileDIM);
-                        int tiletype = this.tiles[index].image_ID;
 
-                        if (tiletype != 0) g.DrawImage(Tile.images[tiletype], loc);
+                        int coll_id = this.tiles[index].get_coll_ID();
+                        if (coll_id > 0x0) g.DrawImage(Tile.std_images[coll_id], loc);
+
+                        int obj_id = this.tiles[index].get_obj_ID();
+                        if (obj_id > 0x1) g.DrawImage(Tile.obj_images[0], loc);
                     }
                 }
             }
@@ -186,7 +195,7 @@ namespace BM64_LevelCreator
 
         public int get_mem_size()
         {
-            return (this.x_extent * this.y_extent) * SECTION_MEMSIZE;
+            return ((this.x_extent * this.y_extent) * SECTION_MEMSIZE) + LAYER_HEADSIZE;
         }
     }
 
@@ -200,6 +209,7 @@ namespace BM64_LevelCreator
 
         public int mem_size = MAP_HEADSIZE;
         public int layer_cnt = 0;
+        public byte[] header = new byte[5];
         public int hight = 0;
         public List<Layer> layers = new List<Layer>();
 
@@ -252,6 +262,10 @@ namespace BM64_LevelCreator
 
             System.Console.WriteLine("Reading File...");
             byte[] input = System.IO.File.ReadAllBytes(filename);
+
+            // copy the header over
+            for (int i = 0; i < 5; i++)
+                this.header[i] = input[i];
 
             // first of all, calculate where the layers start (this varies a bit, so we need to do this first)
             int layer_cnt = input[0];
@@ -315,13 +329,9 @@ namespace BM64_LevelCreator
                                 current_tile.nibbles[2] = (byte)(tileB_2 / 0x10);
                                 current_tile.nibbles[3] = (byte)(tileB_2 % 0x10);
 
-                                // The most important part for visuals is collision
-                                current_tile.image_ID = current_tile.nibbles[3];
-
-                                if (current_tile.nibbles[3] == 0x9 || current_tile.nibbles[3] == 0xE)
+                                if (current_tile.get_coll_ID() == 0x9 || current_tile.get_coll_ID() == 0xE)
                                 {
                                     System.Console.WriteLine("Unidentified Tile: {0:X4} In Sec.({1}|{2})", current_tile.concat_nibbles(), sec_x, sec_y);
-                                    current_tile.image_ID = 0xE;
                                 }
                             }
                         }
@@ -335,26 +345,30 @@ namespace BM64_LevelCreator
         {
             System.Console.WriteLine("Translating Map into Output Bytes...");
             this.calc_mem_size();
-            byte[] input = new byte[this.mem_size];
+            byte[] output = new byte[this.mem_size];
+
+            // copy the header over
+            for (int i = 0; i < 5; i++)
+                output[i] = this.header[i];
 
             int offset = 0;
             // input the map header
-            input[offset + 0] = (byte) this.layer_cnt;
+            output[offset + 0] = (byte) this.layer_cnt;
             offset += MAP_HEADSIZE;
             // and iterate over all the layers
             foreach (Layer layer in this.layers)
             {
                 // input the layer header
-                input[offset + 0] = (byte) layer.x_extent;
-                input[offset + 1] = (byte) layer.y_extent;
-                input[offset + 2] = (byte) layer.dz;
+                output[offset + 0] = (byte) layer.x_extent;
+                output[offset + 1] = (byte) layer.y_extent;
+                output[offset + 2] = (byte) layer.dz;
                 offset += LAYER_HEADSIZE;
                 // and iterate over all the sections
                 foreach (Section section in layer.sections)
                 {
                     // input section header
-                    input[offset + 0] = (byte)section.x;
-                    input[offset + 1] = (byte)section.y;
+                    output[offset + 0] = (byte) section.x;
+                    output[offset + 1] = (byte) section.y;
                     offset += SECTION_HEADSIZE;
                     // and iterate over all the tiles
                     for (int y = 0; y < Section.DIM; y++)
@@ -363,8 +377,8 @@ namespace BM64_LevelCreator
                         {
                             // input tile data
                             Tile current_tile = this.get_Tile_At(layer.index, new Point(section.x, section.y), new Point(x, y));
-                            input[offset + 0] = (byte) ((current_tile.nibbles[0] * 0x10) + current_tile.nibbles[1]);
-                            input[offset + 1] = (byte) ((current_tile.nibbles[2] * 0x10) + current_tile.nibbles[3]);
+                            output[offset + 0] = (byte) ((current_tile.nibbles[0] * 0x10) + current_tile.nibbles[1]);
+                            output[offset + 1] = (byte) ((current_tile.nibbles[2] * 0x10) + current_tile.nibbles[3]);
                             offset += TILE_MEMSIZE;
                         }
                     }
@@ -374,7 +388,9 @@ namespace BM64_LevelCreator
             // and finally transfer the input
             System.IO.BinaryWriter target = new System.IO.BinaryWriter(System.IO.File.Open(filename, System.IO.FileMode.Create));
             target.Flush();
-            target.Write(input);
+            target.Write(output);
+            target.Close();
+            System.Console.WriteLine("Finished Writing to {0}", filename);
         }
     }
 }

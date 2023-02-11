@@ -90,5 +90,11 @@
   <ItemGroup>
     <None Include="assets\images\DPad.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\images\Zoomlenses.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\images\Zoom.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
