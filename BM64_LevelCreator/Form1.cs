@@ -468,7 +468,7 @@ namespace BM64_LevelCreator
         {
             int content = Convert.ToInt16(textBox3.Text, 16);
             if (content < 0x0) content = 0x0;
-            if (content > 0xF) content = 0xF;
+            if (content > 0x6) content = 0x6; // there can only be 6 diff enemies !
             this.textBox3.Text = String.Format("{0:X}", content);
             this.selected_tile.nibbles[1] = (byte)content;
             TileInfoPanel.Refresh();

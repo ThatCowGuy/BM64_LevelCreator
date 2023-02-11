@@ -131,10 +131,16 @@ namespace BM64_LevelCreator
                         loc.Y = (y * scaled_TileDIM);
 
                         int coll_id = this.tiles[index].get_coll_ID();
-                        if (coll_id > 0x0) g.DrawImage(Tile.std_images[coll_id], loc);
+                        if (coll_id != 0x0)
+                        {
+                            g.DrawImage(Tile.std_images[coll_id], loc);
 
-                        int obj_id = this.tiles[index].get_obj_ID();
-                        if (obj_id > 0x1) g.DrawImage(Tile.obj_images[0], loc);
+                            int obj_id = this.tiles[index].get_obj_ID();
+                            if (obj_id != 0x1)
+                            {
+                                g.DrawImage(Tile.obj_images[0], loc);
+                            }
+                        }
                     }
                 }
             }

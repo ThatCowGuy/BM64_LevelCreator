@@ -336,9 +336,9 @@ namespace BM64_LevelCreator
             this.label9.Location = new System.Drawing.Point(2, 25);
             this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(36, 20);
+            this.label9.Size = new System.Drawing.Size(80, 20);
             this.label9.TabIndex = 5;
-            this.label9.Text = "???";
+            this.label9.Text = "Enemy-ID";
             // 
             // label10
             // 
@@ -354,7 +354,7 @@ namespace BM64_LevelCreator
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(67, 0);
+            this.textBox2.Location = new System.Drawing.Point(82, 0);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(39, 20);
             this.textBox2.TabIndex = 7;
@@ -362,7 +362,7 @@ namespace BM64_LevelCreator
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(67, 25);
+            this.textBox3.Location = new System.Drawing.Point(82, 25);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(39, 20);
             this.textBox3.TabIndex = 8;
@@ -370,7 +370,7 @@ namespace BM64_LevelCreator
             // 
             // textBox4
             // 
-            this.textBox4.Location = new System.Drawing.Point(67, 50);
+            this.textBox4.Location = new System.Drawing.Point(82, 50);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(39, 20);
             this.textBox4.TabIndex = 9;
