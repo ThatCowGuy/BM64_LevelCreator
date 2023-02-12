@@ -63,24 +63,30 @@ namespace BM64_LevelCreator
             for (int row = 0; row < 3; row++)
                 System.Console.WriteLine("({0:000.00}, {1:000.00})", M.Elements[row * 2 + 0], M.Elements[row * 2 + 1]);
         }
+        private void RefreshVisuals()
+        {
+            MapViewPanel.Refresh();
+            LayerViewPanel.Refresh();
+            SectionViewPanel.Refresh();
+        }
 
 
         public Form1()
         {
             InitializeComponent();
+
+            this.comboBox1.DataSource = new List<string>(GlobalData.collision_files.Keys);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             Tile.init_images();
             
-            // https://github.com/Coockie1173/BomerhackerThree/blob/main/FileList.txt
-            string filename = "../../assets/maps/littleroom.bin";
-            // string filename = "../../assets/maps/RM3_MainA.bin";
-            // string filename = "../../assets/maps/GG1_MainB.bin";
-            // string filename = "../../assets/maps/Table 13_588.bin";
-
-            current_map.load_from_File(filename);
+            // load the first map from the dropdown as a dummy
+            String filename = GlobalData.collision_files[this.comboBox1.Text];
+            String filepath = GlobalData.BM64_CollisionDir + filename;
+            // and load it
+            current_map.load_from_File(filepath);
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -292,8 +298,8 @@ namespace BM64_LevelCreator
             int select_y = (int)(relative_y / (int)(LVP_section_display_DIM * LVP_zoom));
 
             // some OOB checks
-            if (select_x >= current_map.layers[0].x_extent) return;
-            if (select_y >= current_map.layers[0].y_extent) return;
+            if (select_x >= current_map.layers[selected_layer].x_extent) return;
+            if (select_y >= current_map.layers[selected_layer].y_extent) return;
 
             // translating the results
             this.selected_section_x = select_x;
@@ -329,42 +335,41 @@ namespace BM64_LevelCreator
 
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
+            // update the selected layer correctly
             if (numericUpDown1.Value < 0) numericUpDown1.Value = 0;
             if (numericUpDown1.Value >= current_map.layer_cnt) numericUpDown1.Value = (current_map.layer_cnt - 1);
-
             selected_layer = (int)numericUpDown1.Value;
 
-            RefreshVisuals();
-        }
+            // in case the new layer has a diff x/y_extent, we need this extra check (Test Map 1 does that)
+            if (this.selected_section_x >= current_map.layers[selected_layer].x_extent)
+                this.selected_section_x = current_map.layers[selected_layer].x_extent - 1;
+            if (this.selected_section_y >= current_map.layers[selected_layer].y_extent)
+                this.selected_section_y = current_map.layers[selected_layer].y_extent - 1;
 
-        private void RefreshVisuals()
-        {
-            MapViewPanel.Refresh();
-            LayerViewPanel.Refresh();
-            SectionViewPanel.Refresh();
+            // and redraw shit
+            RefreshVisuals();
         }
 
         private void LoadFileButton_Click(object sender, EventArgs e)
         {
-            OpenFileDialog OFD = new OpenFileDialog();
-            OFD.InitialDirectory = "../../assets/maps/";
-            OFD.Filter = "*.bin|*.bin";
-            if(OFD.ShowDialog() == DialogResult.OK)
-            {
-                current_map.load_from_File(OFD.FileName);
-                RefreshVisuals();
-            }
+            // reset the selected layer and section or it might crash when loading a smaller map
+            this.selected_layer = 0;
+            this.selected_section_x = 0;
+            this.selected_section_y = 0;
+            // create the correct filepath (might want to check if it exists)
+            String filename = GlobalData.collision_files[this.comboBox1.Text];
+            String filepath = GlobalData.BM64_CollisionDir + filename;
+            // and load it
+            current_map.load_from_File(filepath);
+            RefreshVisuals();
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
-            SaveFileDialog SFD = new SaveFileDialog();
-            SFD.InitialDirectory = "../../assets/maps/";
-            SFD.Filter = "*.bin|*.bin";
-            if (SFD.ShowDialog() == DialogResult.OK)
-            {
-                // writes the map content as byte array into the File(path)
-                current_map.write_to_File(SFD.FileName);
-            }
+            // create the correct filepath (might want to check if it exists)
+            String filename = GlobalData.collision_files[this.comboBox1.Text];
+            String filepath = GlobalData.BM64_CollisionDir + filename;
+            // and save it
+            current_map.write_to_File(filepath);
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -419,10 +424,10 @@ namespace BM64_LevelCreator
             if (angle < 0.0) angle = 2.0 * Math.PI + angle;
 
             // translate the angle coordinate into a direction to move the viewport
-            if ((angle > (1.0 / 4.0) * Math.PI) && (angle < (3.0 / 4.0) * Math.PI)) this.LVP_y_shift--;
-            else if ((angle > (3.0 / 4.0) * Math.PI) && (angle < (5.0 / 4.0) * Math.PI)) this.LVP_x_shift--;
-            else if ((angle > (5.0 / 4.0) * Math.PI) && (angle < (7.0 / 4.0) * Math.PI)) this.LVP_y_shift++;
-            else this.LVP_x_shift++;
+            if ((angle > (1.0 / 4.0) * Math.PI) && (angle < (3.0 / 4.0) * Math.PI)) this.LVP_y_shift++;
+            else if ((angle > (3.0 / 4.0) * Math.PI) && (angle < (5.0 / 4.0) * Math.PI)) this.LVP_x_shift++;
+            else if ((angle > (5.0 / 4.0) * Math.PI) && (angle < (7.0 / 4.0) * Math.PI)) this.LVP_y_shift--;
+            else this.LVP_x_shift--;
 
             // and update the panel
             LayerViewPanel.Refresh();
@@ -487,25 +492,32 @@ namespace BM64_LevelCreator
         private void button2_Click_1(object sender, EventArgs e)
         {
             OpenFileDialog OFD = new OpenFileDialog();
+            OFD.InitialDirectory = "../../";
             OFD.Filter = "*.z64|*.z64";
-
             if (OFD.ShowDialog() == DialogResult.OK)
             {
                 RipFiles(OFD.FileName);
+                System.Console.WriteLine("File-Ripping concluded");
+            }
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //OpenFileDialog OFD = new OpenFileDialog();
+            //OFD.InitialDirectory = "../../";
+            //OFD.Filter = "*.z64|*.z64";
+            //if (OFD.ShowDialog() == DialogResult.OK)
+            {
+                BuildFiles();
+                System.Console.WriteLine("ROM-building concluded");
             }
         }
 
         private void RipFiles(string RomPath)
         {
-            string DestDir = System.IO.Path.GetDirectoryName(RomPath);
-            DestDir = System.IO.Path.Combine(DestDir, "bm64data");
-            GlobalData.ProjectDir = DestDir;
+            string DestDir = GlobalData.BM64_DataDir;
 
-            //remove the old dump
-            if(Directory.Exists(DestDir))
-            {
-                Directory.Delete(DestDir, true);
-            }
+            // remove the old dump
+            if (Directory.Exists(DestDir)) Directory.Delete(DestDir, true);
 
             ProcessStartInfo SI = new ProcessStartInfo();
             SI.CreateNoWindow = true;
@@ -526,5 +538,34 @@ namespace BM64_LevelCreator
                 Console.WriteLine("Couldn't rip files!");
             }
         }
+        private void BuildFiles()
+        {
+            string DestDir = GlobalData.BM64_DataDir;
+
+            ProcessStartInfo SI = new ProcessStartInfo();
+            SI.CreateNoWindow = true;
+            SI.UseShellExecute = true;
+            SI.FileName = GlobalData.RipperPath;
+            SI.WindowStyle = ProcessWindowStyle.Hidden;
+            SI.Arguments = String.Format("\"{0}\" {1}", DestDir, "../../../Modified_BM64.z64");
+            Console.WriteLine(SI.Arguments);
+            try
+            {
+                using (Process exeProcess = Process.Start(SI))
+                {
+                    exeProcess.WaitForExit();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Couldn't rip files!");
+            }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

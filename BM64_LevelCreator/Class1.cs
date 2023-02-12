@@ -44,7 +44,7 @@ namespace BM64_LevelCreator
             { 0x6, "RAMP_L" },
             { 0x7, "WALL_C_UL" },
             { 0x8, "WALL_C_DL" },
-            { 0x9, "UNK_9" },
+            { 0x9, "KillZone" },
             { 0xA, "EFFECT_1" },
             { 0xB, "EFFECT_2" },
             { 0xC, "WALL_C_UR" },
@@ -65,7 +65,7 @@ namespace BM64_LevelCreator
             std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampL.png"), imgSize));
             std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_UL.png"), imgSize));
             std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_DL.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/UNK_0x9.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/KillZone.png"), imgSize));
             std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Effect_1.png"), imgSize));
             std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Effect_2.png"), imgSize));
             std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_UR.png"), imgSize));
@@ -156,12 +156,6 @@ namespace BM64_LevelCreator
         public int y_extent = 0;
         public List<Section> sections = new List<Section>();
 
-        public static int SECTION_HEADSIZE = 0x2;
-        public static int LAYER_HEADSIZE = 0x3;
-        public static int MAP_HEADSIZE = 0x5;
-        public static int TILE_MEMSIZE = 0x2;
-        public static int SECTION_MEMSIZE = SECTION_HEADSIZE + (Section.DIM * Section.DIM) * TILE_MEMSIZE;
-
         public Layer(int index, int dz, int z)
         {
             this.index = index;
@@ -201,19 +195,13 @@ namespace BM64_LevelCreator
 
         public int get_mem_size()
         {
-            return ((this.x_extent * this.y_extent) * SECTION_MEMSIZE) + LAYER_HEADSIZE;
+            return ((this.x_extent * this.y_extent) * GlobalData.SECTION_MEMSIZE) + GlobalData.LAYER_HEADSIZE;
         }
     }
 
     public class Map
     {
-        public static int SECTION_HEADSIZE = 0x2;
-        public static int LAYER_HEADSIZE = 0x3;
-        public static int MAP_HEADSIZE = 0x5;
-        public static int TILE_MEMSIZE = 0x2;
-        public static int SECTION_MEMSIZE = SECTION_HEADSIZE + (Section.DIM * Section.DIM) * TILE_MEMSIZE;
-
-        public int mem_size = MAP_HEADSIZE;
+        public int mem_size = GlobalData.MAP_HEADSIZE;
         public int layer_cnt = 0;
         public byte[] header = new byte[5];
         public int hight = 0;
@@ -222,7 +210,7 @@ namespace BM64_LevelCreator
         public void calc_mem_size()
         {
             // start of with the map header size
-            this.mem_size = MAP_HEADSIZE;
+            this.mem_size = GlobalData.MAP_HEADSIZE;
             // and add up all the layer mem sizes
             foreach (Layer layer in this.layers)
                this.mem_size += layer.get_mem_size();
@@ -263,7 +251,7 @@ namespace BM64_LevelCreator
 
         public void load_from_File(string filename)
         {
-            System.Console.WriteLine("Clearing Map...");
+            System.Console.WriteLine("Clearing currently loaded Map...");
             this.clear();
 
             System.Console.WriteLine("Reading File...");
@@ -276,7 +264,7 @@ namespace BM64_LevelCreator
             // first of all, calculate where the layers start (this varies a bit, so we need to do this first)
             int layer_cnt = input[0];
             int[] layer_offsets = new int[layer_cnt];
-            layer_offsets[0] = MAP_HEADSIZE;
+            layer_offsets[0] = GlobalData.MAP_HEADSIZE;
             for (int i = 1; i < layer_cnt; i++)
             {
                 // gather information on preceeding section
@@ -284,7 +272,7 @@ namespace BM64_LevelCreator
                 int y_extent = input[layer_offsets[(i - 1)] + 1];
                 int section_cnt = (x_extent * y_extent);
                 // calc next offset
-                layer_offsets[i] = layer_offsets[(i - 1)] + 3 + (section_cnt * SECTION_MEMSIZE);
+                layer_offsets[i] = layer_offsets[(i - 1)] + 3 + (section_cnt * GlobalData.SECTION_MEMSIZE);
             }
             // now we can create the layers and expand them to their respective extents
             int cur_total_height = 0;
@@ -304,14 +292,14 @@ namespace BM64_LevelCreator
                 this.layers[i].expand_y(y_extent - 1);
 
                 // fill in the sections from the file input
-                int layer_offset = layer_offsets[i] + LAYER_HEADSIZE;
+                int layer_offset = layer_offsets[i] + GlobalData.LAYER_HEADSIZE;
                 // iterate over the sections on both X and Y axes
                 for (int sec_y = 0; sec_y < this.layers[i].y_extent; sec_y++)
                 {
                     for (int sec_x = 0; sec_x < this.layers[i].x_extent; sec_x++)
                     {
-                        int section_offset = ((sec_y * this.layers[i].x_extent) + sec_x) * SECTION_MEMSIZE;
-                        section_offset += SECTION_HEADSIZE; 
+                        int section_offset = ((sec_y * this.layers[i].x_extent) + sec_x) * GlobalData.SECTION_MEMSIZE;
+                        section_offset += GlobalData.SECTION_HEADSIZE; 
 
                         // iterate over the tiles on both X and Y axes
                         for (int y = 0; y < Section.DIM; y++)
@@ -319,7 +307,7 @@ namespace BM64_LevelCreator
                             for (int x = 0; x < Section.DIM; x++)
                             {
                                 // combine all the offsets into one final offset
-                                int tile_offset = ((y * Section.DIM) + x) * TILE_MEMSIZE;
+                                int tile_offset = ((y * Section.DIM) + x) * GlobalData.TILE_MEMSIZE;
                                 int full_offset = layer_offset + section_offset + tile_offset;
 
                                 // grab a Handle to the current Tile (Fake Pointer..)
@@ -360,7 +348,7 @@ namespace BM64_LevelCreator
             int offset = 0;
             // input the map header
             output[offset + 0] = (byte) this.layer_cnt;
-            offset += MAP_HEADSIZE;
+            offset += GlobalData.MAP_HEADSIZE;
             // and iterate over all the layers
             foreach (Layer layer in this.layers)
             {
@@ -368,14 +356,14 @@ namespace BM64_LevelCreator
                 output[offset + 0] = (byte) layer.x_extent;
                 output[offset + 1] = (byte) layer.y_extent;
                 output[offset + 2] = (byte) layer.dz;
-                offset += LAYER_HEADSIZE;
+                offset += GlobalData.LAYER_HEADSIZE;
                 // and iterate over all the sections
                 foreach (Section section in layer.sections)
                 {
                     // input section header
                     output[offset + 0] = (byte) section.x;
                     output[offset + 1] = (byte) section.y;
-                    offset += SECTION_HEADSIZE;
+                    offset += GlobalData.SECTION_HEADSIZE;
                     // and iterate over all the tiles
                     for (int y = 0; y < Section.DIM; y++)
                     {
@@ -385,7 +373,7 @@ namespace BM64_LevelCreator
                             Tile current_tile = this.get_Tile_At(layer.index, new Point(section.x, section.y), new Point(x, y));
                             output[offset + 0] = (byte) ((current_tile.nibbles[0] * 0x10) + current_tile.nibbles[1]);
                             output[offset + 1] = (byte) ((current_tile.nibbles[2] * 0x10) + current_tile.nibbles[3]);
-                            offset += TILE_MEMSIZE;
+                            offset += GlobalData.TILE_MEMSIZE;
                         }
                     }
                 }
