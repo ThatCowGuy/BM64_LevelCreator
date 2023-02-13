@@ -87,6 +87,8 @@ namespace BM64_LevelCreator
             String filepath = GlobalData.BM64_CollisionDir + filename;
             // and load it
             current_map.load_from_File(filepath);
+
+            //current_map.dump_as_obj("../../../test.obj");
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -115,17 +117,16 @@ namespace BM64_LevelCreator
             if (select_y >= Section.DIM) return;
 
             // translating the results
-            int sel_tile_index = select_x + (select_y * Section.DIM);
             int sel_section_index = (current_map.layers[selected_layer].x_extent * selected_section_y) + selected_section_x;
 
             if (e.Button == MouseButtons.Left)
             {
-                selected_tile = current_map.layers[selected_layer].sections[sel_section_index].tiles[sel_tile_index].clone();
+                selected_tile = current_map.layers[selected_layer].sections[sel_section_index].tiles[select_x, select_y].clone();
                 TileInfoPanel.Refresh();
             }
             if (e.Button == MouseButtons.Right)
             {
-                current_map.layers[selected_layer].sections[sel_section_index].tiles[sel_tile_index] = selected_tile.clone();
+                current_map.layers[selected_layer].sections[sel_section_index].tiles[select_x, select_y] = selected_tile.clone();
                 current_map.layers[selected_layer].sections[sel_section_index].create_representation();
 
                 RefreshVisuals();
@@ -350,27 +351,6 @@ namespace BM64_LevelCreator
             RefreshVisuals();
         }
 
-        private void LoadFileButton_Click(object sender, EventArgs e)
-        {
-            // reset the selected layer and section or it might crash when loading a smaller map
-            this.selected_layer = 0;
-            this.selected_section_x = 0;
-            this.selected_section_y = 0;
-            // create the correct filepath (might want to check if it exists)
-            String filename = GlobalData.collision_files[this.comboBox1.Text];
-            String filepath = GlobalData.BM64_CollisionDir + filename;
-            // and load it
-            current_map.load_from_File(filepath);
-            RefreshVisuals();
-        }
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            // create the correct filepath (might want to check if it exists)
-            String filename = GlobalData.collision_files[this.comboBox1.Text];
-            String filepath = GlobalData.BM64_CollisionDir + filename;
-            // and save it
-            current_map.write_to_File(filepath);
-        }
         private void button1_Click(object sender, EventArgs e)
         {
             this.MVP_x_shift++;
@@ -489,6 +469,27 @@ namespace BM64_LevelCreator
             TileInfoPanel.Refresh();
         }
 
+        private void LoadFileButton_Click(object sender, EventArgs e)
+        {
+            // reset the selected layer and section or it might crash when loading a smaller map
+            this.selected_layer = 0;
+            this.selected_section_x = 0;
+            this.selected_section_y = 0;
+            // create the correct filepath (might want to check if it exists)
+            String filename = GlobalData.collision_files[this.comboBox1.Text];
+            String filepath = GlobalData.BM64_CollisionDir + filename;
+            // and load it
+            current_map.load_from_File(filepath);
+            RefreshVisuals();
+        }
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            // create the correct filepath (might want to check if it exists)
+            String filename = GlobalData.collision_files[this.comboBox1.Text];
+            String filepath = GlobalData.BM64_CollisionDir + filename;
+            // and save it
+            current_map.write_to_File(filepath);
+        }
         private void button2_Click_1(object sender, EventArgs e)
         {
             OpenFileDialog OFD = new OpenFileDialog();
@@ -509,6 +510,17 @@ namespace BM64_LevelCreator
             {
                 BuildFiles();
                 System.Console.WriteLine("ROM-building concluded");
+            }
+        }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog SFD = new SaveFileDialog();
+            SFD.InitialDirectory = "../../";
+            SFD.Filter = "*.obj|*.obj";
+            if (SFD.ShowDialog() == DialogResult.OK)
+            {
+                current_map.dump_as_obj(SFD.FileName);
+                System.Console.WriteLine("File sucessfully exportet to .OBJ");
             }
         }
 

@@ -1,11 +1,16 @@
-## Own Stuff
-dump/
-BM64_Dump/
+## Compiled Stuff
 bin/
 obj/
+## ROM stuff
+dump/
+BM64_Dump/
 *.z64
 *.n64
 *.v64
+## 3D stuff
+*.obj
+*.mtl
+## Stupid Stuff
 *.Identifier
 
 ## Ignore Visual Studio temporary files, build results, and

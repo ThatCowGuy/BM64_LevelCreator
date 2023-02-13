@@ -52,7 +52,6 @@ namespace BM64_LevelCreator
             { 0xE, "UNK_E" },
             { 0xF, "WALL" },
         };
-
         public static void init_images() // now sorted by the actual nibble value of the coll ID
         {
             Size imgSize = new Size(Tile.DIM, Tile.DIM);
@@ -89,6 +88,12 @@ namespace BM64_LevelCreator
 
         public int get_coll_ID() { return this.nibbles[3]; }
         public int get_obj_ID() { return this.nibbles[2]; }
+
+        // gets just the coll_ID from a full tiletype integer (Nibble 4)
+        public static int calc_coll_ID(int tiletype)
+        {
+            return (tiletype % 0x10);
+        }
     }
 
     public class Section
@@ -96,19 +101,24 @@ namespace BM64_LevelCreator
         // A Section consists of 8x8 Tiles and has an (x,y) coord
         public static int DIM = 8;
         public int x, y;
-        public Tile[] tiles;
+        public Tile[,] tiles;
 
         public Image rep;
 
         // Proper Constructor needed, or the Tiles init to NULL...
-        public Section(int x, int y)
+        public Section(int section_x, int section_y)
         {
-            this.x = x;
-            this.y = y;
+            this.x = section_x;
+            this.y = section_y;
 
-            this.tiles = new Tile[DIM * DIM];
-            for (int i = 0; i < DIM * DIM; i++)
-                this.tiles[i] = new Tile(0);
+            this.tiles = new Tile[Section.DIM, Section.DIM];
+            for (int x = 0; x < Section.DIM; x++)
+            {
+                for (int y = 0; y < Section.DIM; y++)
+                {
+                    this.tiles[x, y] = new Tile(0);
+                }
+            }
         }
 
         public void create_representation()
@@ -126,16 +136,15 @@ namespace BM64_LevelCreator
                 {
                     for (int y = 0; y < Section.DIM; y++)
                     {
-                        int index = x + (y * Section.DIM);
                         loc.X = (x * scaled_TileDIM);
                         loc.Y = (y * scaled_TileDIM);
 
-                        int coll_id = this.tiles[index].get_coll_ID();
+                        int coll_id = this.tiles[x, y].get_coll_ID();
                         if (coll_id != 0x0)
                         {
                             g.DrawImage(Tile.std_images[coll_id], loc);
 
-                            int obj_id = this.tiles[index].get_obj_ID();
+                            int obj_id = this.tiles[x, y].get_obj_ID();
                             if (obj_id != 0x1)
                             {
                                 g.DrawImage(Tile.obj_images[0], loc);
@@ -155,6 +164,7 @@ namespace BM64_LevelCreator
         public int x_extent = 0;
         public int y_extent = 0;
         public List<Section> sections = new List<Section>();
+        public int[,] tile_matrix;
 
         public Layer(int index, int dz, int z)
         {
@@ -196,6 +206,81 @@ namespace BM64_LevelCreator
         public int get_mem_size()
         {
             return ((this.x_extent * this.y_extent) * GlobalData.SECTION_MEMSIZE) + GlobalData.LAYER_HEADSIZE;
+        }
+
+        // From all sections within this layer, create one big tilematrix
+        public void calc_tile_matrix()
+        {
+            int x_dim = (this.x_extent * Section.DIM);
+            int y_dim = (this.y_extent * Section.DIM);
+            this.tile_matrix = new int[x_dim, y_dim];
+
+            foreach (Section section in this.sections)
+            {
+                for (int x = 0; x < Section.DIM; x++)
+                {
+                    int x_matrix_index = (section.x * Section.DIM) + x;
+                    for (int y = 0; y < Section.DIM; y++)
+                    {
+                        int y_matrix_index = (section.y * Section.DIM) + y;
+
+
+                        this.tile_matrix[x_matrix_index, y_matrix_index] = section.tiles[x, y].concat_nibbles();
+                    }
+                }
+            }
+        }
+
+        public bool check_LEFT_neighbor_for(int my_x, int my_y, List<int> valid_types)
+        {
+            // Border Check (AND OOB CHECK)
+            if (my_x == 0) return valid_types.Contains(0x0);
+            // actual inbounds check
+            int neighboring_tile = this.tile_matrix[(my_x - 1), my_y];
+            return valid_types.Contains(Tile.calc_coll_ID(neighboring_tile));
+        }
+        public bool check_RIGHT_neighbor_for(int my_x, int my_y, List<int> valid_types)
+        {
+            // Border Check (AND OOB CHECK)
+            if (my_x == (this.x_extent * Section.DIM - 1))
+                return valid_types.Contains(0x0);
+            // actual inbounds check
+            int neighboring_tile = this.tile_matrix[(my_x + 1), my_y];
+            return valid_types.Contains(Tile.calc_coll_ID(neighboring_tile));
+        }
+        public bool check_NORTH_neighbor_for(int my_x, int my_y, List<int> valid_types)
+        {
+            // Border Check (AND OOB CHECK)
+            if (my_y == 0)return valid_types.Contains(0x0);
+            // actual inbounds check
+            int neighboring_tile = this.tile_matrix[my_x, (my_y - 1)];
+            return valid_types.Contains(Tile.calc_coll_ID(neighboring_tile));
+        }
+        public bool check_SOUTH_neighbor_for(int my_x, int my_y, List<int> valid_types)
+        {
+            // Border Check (AND OOB CHECK)
+            if (my_y == (this.y_extent * Section.DIM - 1))
+                return valid_types.Contains(0x0);
+            // actual inbounds check
+            int neighboring_tile = this.tile_matrix[my_x, (my_y + 1)];
+            return valid_types.Contains(Tile.calc_coll_ID(neighboring_tile));
+        }
+        // Some Overloads for single type checks... C# is ass sometimes
+        public bool check_LEFT_neighbor_for(int my_x, int my_y, int valid_type)
+        {
+            return check_LEFT_neighbor_for(my_x, my_y, new List<int> { valid_type });
+        }
+        public bool check_RIGHT_neighbor_for(int my_x, int my_y, int valid_type)
+        {
+            return check_RIGHT_neighbor_for(my_x, my_y, new List<int> { valid_type });
+        }
+        public bool check_NORTH_neighbor_for(int my_x, int my_y, int valid_type)
+        {
+            return check_NORTH_neighbor_for(my_x, my_y, new List<int> { valid_type });
+        }
+        public bool check_SOUTH_neighbor_for(int my_x, int my_y, int valid_type)
+        {
+            return check_SOUTH_neighbor_for(my_x, my_y, new List<int> { valid_type });
         }
     }
 
@@ -246,7 +331,28 @@ namespace BM64_LevelCreator
             Layer chosen_layer = this.layers[layer];
             Section chosen_section = chosen_layer.sections[(chosen_layer.x_extent * section.Y) + section.X];
             // then return the tile
-            return chosen_section.tiles[(Section.DIM * coord.Y) + coord.X];
+            return chosen_section.tiles[coord.X, coord.Y];
+        }
+
+        public int get_deathplane_dz()
+        {
+            return ((-1) * this.header[4]);
+        }
+        // input: 4 corners of a quad IN COUNTERCLOCKWISE ORDER
+        // output: String that fully defines the quad for OBJ-FILE
+        public static string string_tri_from_vtx(string cornerA, string cornerB, string cornerC, int vtx_cnt)
+        {
+            string tri = String.Format("{0}\n{1}\n{2}\nf {3} {4} {5}",
+                cornerA, cornerB, cornerC, vtx_cnt + 1, vtx_cnt + 2, vtx_cnt + 3);
+            return tri;
+        }
+        // input: 3 corners of a tri IN COUNTERCLOCKWISE ORDER
+        // output: String that fully defines the tri for OBJ-FILE
+        public static string string_quad_from_vtx(string cornerA, string cornerB, string cornerC, string cornerD, int vtx_cnt)
+        {
+            string quad = String.Format("{0}\n{1}\n{2}\n{3}\nf {4} {5} {6} {7}",
+                cornerA, cornerB, cornerC, cornerD, vtx_cnt + 1, vtx_cnt + 2, vtx_cnt + 3, vtx_cnt + 4);
+            return quad;
         }
 
         public void load_from_File(string filename)
@@ -323,7 +429,7 @@ namespace BM64_LevelCreator
                                 current_tile.nibbles[2] = (byte)(tileB_2 / 0x10);
                                 current_tile.nibbles[3] = (byte)(tileB_2 % 0x10);
 
-                                if (current_tile.get_coll_ID() == 0x9 || current_tile.get_coll_ID() == 0xE)
+                                if (current_tile.get_coll_ID() == 0xE)
                                 {
                                     System.Console.WriteLine("Unidentified Tile: {0:X4} In Sec.({1}|{2})", current_tile.concat_nibbles(), sec_x, sec_y);
                                 }
@@ -384,6 +490,371 @@ namespace BM64_LevelCreator
             target.Flush();
             target.Write(output);
             target.Close();
+            System.Console.WriteLine("Finished Writing to {0}", filename);
+        }
+
+        public void dump_as_obj(string filename)
+        {
+            System.Console.WriteLine("Translating Map into OBJ-FILE...");
+            System.IO.StreamWriter file = new System.IO.StreamWriter(System.IO.File.Open(filename, System.IO.FileMode.Create));
+            file.Flush();
+
+            // this makes comparisons MUCH more readable
+            List<int> FloorTiles = new List<int> { 0x1, 0x2, 0x9, 0xA, 0xB };
+            List<int> UnobstructedTiles = new List<int> { 0x0, 0x1, 0x2, 0x9, 0xA, 0xB };
+            // init vertex count (need to keep track)
+            int vtx_cnt = 0;
+            // also declaring these here because C# is getting an
+            // Aneurysm if I do it inside the switch cases.....
+            int ramp_x, ramp_y;
+            float ramp_len, ramp_slope;
+
+            // first of all, I create a Fake Layer(-1)
+            Layer fake_layer = new Layer(-1, 0, this.get_deathplane_dz());
+            this.layers[0].calc_tile_matrix();
+            fake_layer.tile_matrix = this.layers[0].tile_matrix;
+            fake_layer.x_extent = this.layers[0].x_extent;
+            fake_layer.y_extent = this.layers[0].y_extent;
+            // then I simplify this layer into only AIR and WALL
+            for (int y = 0; y < (Section.DIM * this.layers[0].y_extent); y++)
+            {
+                for (int x = 0; x < (Section.DIM * this.layers[0].x_extent); x++)
+                {
+                    if (Tile.calc_coll_ID(fake_layer.tile_matrix[x, y]) == 0x0)
+                        fake_layer.tile_matrix[x, y] = 0x0; // AIR
+
+                    else fake_layer.tile_matrix[x, y] = 0xF; // WALL
+                }
+            }
+            // then I treat it as if it was a normal layer, but since L(-1) only has AIR and WALL
+            // the switch statement boils down to if(WALL)...
+            for (int y = 0; y < (Section.DIM * fake_layer.y_extent); y++)
+            {
+                for (int x = 0; x < (Section.DIM * fake_layer.x_extent); x++)
+                {
+                    if (Tile.calc_coll_ID(fake_layer.tile_matrix[x, y]) == 0x0) // AIR
+                        continue;
+
+                    // create a Vertex String for every possible corner of the tile
+                    String vtx_TL = String.Format("v {0} {1} {2}", (x + 0), fake_layer.z, (y + 0));
+                    String vtx_TR = String.Format("v {0} {1} {2}", (x + 1), fake_layer.z, (y + 0));
+                    String vtx_BL = String.Format("v {0} {1} {2}", (x + 0), fake_layer.z, (y + 1));
+                    String vtx_BR = String.Format("v {0} {1} {2}", (x + 1), fake_layer.z, (y + 1));
+                    String vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0), 0, (y + 0));
+                    String vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1), 0, (y + 0));
+                    String vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0), 0, (y + 1));
+                    String vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1), 0, (y + 1));
+
+                    // Draw Wall IFF a floor or air tile is adjecent
+                    if (fake_layer.check_LEFT_neighbor_for(x, y, UnobstructedTiles))
+                    {
+                        // add the quad that defines a LEFT wall
+                        file.WriteLine(string_quad_from_vtx(vtx_TL, vtx_BL, vtx_BL_up, vtx_TL_up, vtx_cnt));
+                        vtx_cnt += 4;
+                    }
+                    if (fake_layer.check_RIGHT_neighbor_for(x, y, UnobstructedTiles))
+                    {
+                        // add the quad that defines a RIGHT wall
+                        file.WriteLine(string_quad_from_vtx(vtx_BR, vtx_TR, vtx_TR_up, vtx_BR_up, vtx_cnt));
+                        vtx_cnt += 4;
+                    }
+                    if (fake_layer.check_NORTH_neighbor_for(x, y, UnobstructedTiles))
+                    {
+                        // add the quad that defines a LEFT wall
+                        file.WriteLine(string_quad_from_vtx(vtx_TR, vtx_TL, vtx_TL_up, vtx_TR_up, vtx_cnt));
+                        vtx_cnt += 4;
+                    }
+                    if (fake_layer.check_SOUTH_neighbor_for(x, y, UnobstructedTiles))
+                    {
+                        // add the quad that defines a LEFT wall
+                        file.WriteLine(string_quad_from_vtx(vtx_BL, vtx_BR, vtx_BR_up, vtx_BL_up, vtx_cnt));
+                        vtx_cnt += 4;
+                    }
+                }
+            }
+
+            // then iterate over all the real layers
+            foreach (Layer layer in this.layers)
+            {
+                // set up their tile matrices again (in case they weren't setup yet AND to restore the matrix of layer-0)
+                layer.calc_tile_matrix();
+                // then iterate over all the tiles
+                for (int y = 0; y < (Section.DIM * layer.y_extent); y++)
+                {
+                    for (int x = 0; x < (Section.DIM * layer.x_extent); x++)
+                    {
+                        // create a Vertex String for every possible corner of the tile
+                        String vtx_TL = String.Format("v {0} {1} {2}", (x + 0), layer.z, (y + 0));
+                        String vtx_TR = String.Format("v {0} {1} {2}", (x + 1), layer.z, (y + 0));
+                        String vtx_BL = String.Format("v {0} {1} {2}", (x + 0), layer.z, (y + 1));
+                        String vtx_BR = String.Format("v {0} {1} {2}", (x + 1), layer.z, (y + 1));
+                        // and for all elevated corners (for walls)
+                        int elevated_hight = layer.z;
+                        if (layer.dz != 0xFF) elevated_hight += layer.dz;
+                        else elevated_hight += 10; // MAGIC NUMBER (basically determines how high the highest walls are)
+                        String vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0), elevated_hight, (y + 0));
+                        String vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1), elevated_hight, (y + 0));
+                        String vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0), elevated_hight, (y + 1));
+                        String vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1), elevated_hight, (y + 1));
+
+                        // then we grab the collision ID of the tile
+                        int coll_ID = Tile.calc_coll_ID(layer.tile_matrix[x, y]);
+                        // and enter a giant switch statement
+                        switch (coll_ID)
+                        {
+                            case (0x1): // Floor
+                            case (0x2): // Warp
+                            case (0x9): // KillZone
+                            case (0xA): // Effect_1
+                            case (0xB): // Effect_2
+                                // add the quad that defines the tile on the bottom
+                                file.WriteLine(string_quad_from_vtx(vtx_TL, vtx_BL, vtx_BR, vtx_TR, vtx_cnt));
+                                vtx_cnt += 4;
+                                break;
+
+                            case (0x3): // D-Ramp
+                                // only look at a D-Ramp if we are on the most NORTHERN tile of it
+                                // so if NORTH is another D-Ramp, we skip this entirely
+                                if (layer.check_NORTH_neighbor_for(x, y, 0x3))
+                                    continue;
+                                // now we KNOW we are the most NORTHERN tile of this D-Ramp
+                                // next, we find the len of this Ramp
+                                ramp_len = 1;
+                                ramp_y = y;
+                                // check how many D-Ramps are SOUTH
+                                while (layer.check_SOUTH_neighbor_for(x, ramp_y, 0x3))
+                                {
+                                    ramp_len++;
+                                    ramp_y++;
+                                }
+                                // now we can calculate the ramp slope
+                                ramp_slope = (layer.dz) / ramp_len;
+
+                                // and now draw the ramp-surface for each ramp_len segment
+                                for (int i = 0; i < ramp_len; i++)
+                                {
+                                    float lower_z = layer.z + ((i + 0) * ramp_slope);
+                                    float upper_z = layer.z + ((i + 1) * ramp_slope);
+
+                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x + 0), lower_z, (y + i + 0));
+                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x + 1), lower_z, (y + i + 0));
+                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x + 0), lower_z, (y + i + 1));
+                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x + 1), lower_z, (y + i + 1));
+                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0), upper_z, (y + i + 0));
+                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1), upper_z, (y + i + 0));
+                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0), upper_z, (y + i + 1));
+                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1), upper_z, (y + i + 1));
+                                    // I hate this
+                                    file.WriteLine(string_quad_from_vtx(ramp_vtx_TL, ramp_vtx_BL_up, ramp_vtx_BR_up, ramp_vtx_TR, vtx_cnt));
+                                    vtx_cnt += 4;
+                                }
+                                break;
+                            case (0x4): // U-Ramp
+                                // only look at a U-Ramp if we are on the most SOUTHERN tile of it
+                                // so if SOUTH is another U-Ramp, we skip this entirely
+                                if (layer.check_SOUTH_neighbor_for(x, y, 0x4))
+                                    continue;
+                                // now we KNOW we are the most SOUTHERN tile of this U-Ramp
+                                // next, we find the len of this Ramp
+                                ramp_len = 1;
+                                ramp_y = y;
+                                // check how many U-Ramps are NORTH
+                                while (layer.check_NORTH_neighbor_for(x, ramp_y, 0x4))
+                                {
+                                    ramp_len++;
+                                    ramp_y--;
+                                }
+                                // now we can calculate the ramp slope
+                                ramp_slope = (layer.dz) / ramp_len;
+
+                                // and now draw the ramp-surface for each ramp_len segment
+                                for (int i = 0; i < ramp_len; i++)
+                                {
+                                    float lower_z = layer.z + ((i + 0) * ramp_slope);
+                                    float upper_z = layer.z + ((i + 1) * ramp_slope);
+
+                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x + 0), lower_z, (y - i + 0));
+                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x + 1), lower_z, (y - i + 0));
+                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x + 0), lower_z, (y - i + 1));
+                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x + 1), lower_z, (y - i + 1));
+                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0), upper_z, (y - i + 0));
+                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1), upper_z, (y - i + 0));
+                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0), upper_z, (y - i + 1));
+                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1), upper_z, (y - i + 1));
+                                    // I hate this
+                                    file.WriteLine(string_quad_from_vtx(ramp_vtx_TL_up, ramp_vtx_BL, ramp_vtx_BR, ramp_vtx_TR_up, vtx_cnt));
+                                    vtx_cnt += 4;
+                                }
+                                break;
+                            case (0x5): // R-Ramp
+                                // only look at a R-Ramp if we are on the most LEFT tile of it
+                                // so if LEFT is another R-Ramp, we skip this entirely
+                                if (layer.check_LEFT_neighbor_for(x, y, 0x5))
+                                    continue;
+                                // now we KNOW we are the most LEFT tile of this R-Ramp
+                                // next, we find the len of this Ramp
+                                ramp_len = 1;
+                                ramp_x = x;
+                                // check how many R-Ramps are RIGHT
+                                while (layer.check_RIGHT_neighbor_for(ramp_x, y, 0x5))
+                                {
+                                    ramp_len++;
+                                    ramp_x++;
+                                }
+                                // now we can calculate the ramp slope
+                                ramp_slope = (layer.dz) / ramp_len;
+
+                                // and now draw the ramp-surface for each ramp_len segment
+                                for (int i = 0; i < ramp_len; i++)
+                                {
+                                    float lower_z = layer.z + ((i + 0) * ramp_slope);
+                                    float upper_z = layer.z + ((i + 1) * ramp_slope);
+
+                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x + i + 0), lower_z, (y + 0));
+                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x + i + 1), lower_z, (y + 0));
+                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x + i + 0), lower_z, (y + 1));
+                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x + i + 1), lower_z, (y + 1));
+                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x + i + 0), upper_z, (y + 0));
+                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x + i + 1), upper_z, (y + 0));
+                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + i + 0), upper_z, (y + 1));
+                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + i + 1), upper_z, (y + 1));
+                                    // I hate this
+                                    file.WriteLine(string_quad_from_vtx(ramp_vtx_TL, ramp_vtx_BL, ramp_vtx_BR_up, ramp_vtx_TR_up, vtx_cnt));
+                                    vtx_cnt += 4;
+                                }
+                                break;
+                            case (0x6): // L-Ramp
+                                // only look at a L-Ramp if we are on the most RIGHT tile
+                                // so if RIGHT is another L-Ramp, we skip this entirely
+                                if (layer.check_RIGHT_neighbor_for(x, y, 0x6))
+                                    continue;
+                                // now we KNOW we are the most RIGHT tile of this L-Ramp
+                                // next, we find the len of this Ramp
+                                ramp_len = 1;
+                                ramp_x = x;
+                                // check how many L-Ramps are LEFT
+                                while (layer.check_LEFT_neighbor_for(ramp_x, y, 0x6))
+                                {
+                                    ramp_len++;
+                                    ramp_x--;
+                                }
+                                // now we can calculate the ramp slope
+                                ramp_slope = (layer.dz) / ramp_len;
+
+                                // and now draw the ramp-surface for each ramp_len segment
+                                for (int i = 0; i < ramp_len; i++)
+                                {
+                                    float lower_z = layer.z + ((i + 0) * ramp_slope);
+                                    float upper_z = layer.z + ((i + 1) * ramp_slope);
+
+                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x - i + 0), lower_z, (y + 0));
+                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x - i + 1), lower_z, (y + 0));
+                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x - i + 0), lower_z, (y + 1));
+                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x - i + 1), lower_z, (y + 1));
+                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x - i + 0), upper_z, (y + 0));
+                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x - i + 1), upper_z, (y + 0));
+                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x - i + 0), upper_z, (y + 1));
+                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x - i + 1), upper_z, (y + 1));
+                                    // I hate this
+                                    file.WriteLine(string_quad_from_vtx(ramp_vtx_TL_up, ramp_vtx_BL_up, ramp_vtx_BR, ramp_vtx_TR, vtx_cnt));
+                                    vtx_cnt += 4;
+                                }
+                                break;
+
+
+                            case (0x7): // Wall-Corner UL
+                                // draw the floor tri IFF a floor tile is to the RIGHT or DOWN
+                                if (layer.check_RIGHT_neighbor_for(x, y, FloorTiles) || layer.check_SOUTH_neighbor_for(x, y, FloorTiles))
+                                {
+                                    file.WriteLine(string_tri_from_vtx(vtx_TR, vtx_BL, vtx_BR, vtx_cnt));
+                                    vtx_cnt += 3;
+                                }
+                                // add the angled wall
+                                file.WriteLine(string_quad_from_vtx(vtx_TR, vtx_BL, vtx_BL_up, vtx_TR_up, vtx_cnt));
+                                vtx_cnt += 4;
+                                break;
+                            case (0x8): // Wall-Corner DL
+                                // draw the floor tri IFF a floor tile is to the RIGHT or UP
+                                if (layer.check_RIGHT_neighbor_for(x, y, FloorTiles) || layer.check_NORTH_neighbor_for(x, y, FloorTiles))
+                                {
+                                    file.WriteLine(string_tri_from_vtx(vtx_TL, vtx_BR, vtx_TR, vtx_cnt));
+                                    vtx_cnt += 3;
+                                }
+                                // add the angled wall
+                                file.WriteLine(string_quad_from_vtx(vtx_BR, vtx_TL, vtx_TL_up, vtx_BR_up, vtx_cnt));
+                                vtx_cnt += 4;
+                                break;
+
+
+                            case (0xC): // Wall-Corner UR
+                                // draw the floor tri IFF a floor tile is to the LEFT or DOWN
+                                if (layer.check_LEFT_neighbor_for(x, y, FloorTiles) || layer.check_SOUTH_neighbor_for(x, y, FloorTiles))
+                                {
+                                    file.WriteLine(string_tri_from_vtx(vtx_TL, vtx_BR, vtx_BL, vtx_cnt));
+                                    vtx_cnt += 3;
+                                }
+                                // add the angled wall
+                                file.WriteLine(string_quad_from_vtx(vtx_TL, vtx_BR, vtx_BR_up, vtx_TL_up, vtx_cnt));
+                                vtx_cnt += 4;
+                                break;
+                            case (0xD): // Wall-Corner DR
+                                // draw the floor tri IFF a floor tile is to the LEFT or UP
+                                if (layer.check_LEFT_neighbor_for(x, y, FloorTiles) || layer.check_NORTH_neighbor_for(x, y, FloorTiles))
+                                {
+                                    file.WriteLine(string_tri_from_vtx(vtx_TL, vtx_TR, vtx_BL, vtx_cnt));
+                                    vtx_cnt += 3;
+                                }
+                                // add the angled wall
+                                file.WriteLine(string_quad_from_vtx(vtx_TR, vtx_BL, vtx_BL_up, vtx_TR_up, vtx_cnt));
+                                vtx_cnt += 4;
+                                break;
+
+
+                            case (0xF): // Wall
+                                // Draw Wall IFF a floor or air tile is adjecent (else this wall tile is "inside")
+                                if (layer.check_LEFT_neighbor_for(x, y, UnobstructedTiles))
+                                {
+                                    // add the quad that defines a LEFT wall
+                                    file.WriteLine(string_quad_from_vtx(vtx_TL, vtx_BL, vtx_BL_up, vtx_TL_up, vtx_cnt));
+                                    vtx_cnt += 4;
+                                }
+                                if (layer.check_RIGHT_neighbor_for(x, y, UnobstructedTiles))
+                                {
+                                    // add the quad that defines a RIGHT wall
+                                    file.WriteLine(string_quad_from_vtx(vtx_BR, vtx_TR, vtx_TR_up, vtx_BR_up, vtx_cnt));
+                                    vtx_cnt += 4;
+                                }
+                                if (layer.check_NORTH_neighbor_for(x, y, UnobstructedTiles))
+                                {
+                                    // add the quad that defines a LEFT wall
+                                    file.WriteLine(string_quad_from_vtx(vtx_TR, vtx_TL, vtx_TL_up, vtx_TR_up, vtx_cnt));
+                                    vtx_cnt += 4;
+                                }
+                                if (layer.check_SOUTH_neighbor_for(x, y, UnobstructedTiles))
+                                {
+                                    // add the quad that defines a LEFT wall
+                                    file.WriteLine(string_quad_from_vtx(vtx_BL, vtx_BR, vtx_BR_up, vtx_BL_up, vtx_cnt));
+                                    vtx_cnt += 4;
+                                }
+                                // checking if I should draw a CEILING UNDER the wall aswell
+                                if (layer.index > 0)
+                                {
+                                    if (UnobstructedTiles.Contains(this.layers[(layer.index - 1)].tile_matrix[x, y]))
+                                    {
+                                        System.Console.WriteLine("Ceiling");
+                                        // add the quad that defines a CEILING
+                                        file.WriteLine(string_quad_from_vtx(vtx_TL_up, vtx_TR_up, vtx_BR_up, vtx_BL_up, vtx_cnt));
+                                        vtx_cnt += 4;
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+
+            // and done
+            file.Close();
             System.Console.WriteLine("Finished Writing to {0}", filename);
         }
     }
