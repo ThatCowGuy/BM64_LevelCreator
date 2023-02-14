@@ -164,7 +164,6 @@ namespace BM64_LevelCreator
             this.SectionCoords_TextBox.Size = new System.Drawing.Size(62, 20);
             this.SectionCoords_TextBox.TabIndex = 9;
             this.SectionCoords_TextBox.Text = "( 0 | 0 )";
-            this.SectionCoords_TextBox.TextChanged += new System.EventHandler(this.SectionCoords_TextBox_TextChanged);
             // 
             // LayerID_NumUpDown
             // 
@@ -444,7 +443,6 @@ namespace BM64_LevelCreator
             this.MapNames_ComboBox.Name = "MapNames_ComboBox";
             this.MapNames_ComboBox.Size = new System.Drawing.Size(190, 21);
             this.MapNames_ComboBox.TabIndex = 7;
-            this.MapNames_ComboBox.SelectedIndexChanged += new System.EventHandler(this.MapNames_ComboBox_SelectedIndexChanged);
             // 
             // RipFiles_Button
             // 

@@ -23,6 +23,18 @@ namespace BM64_LevelCreator
         public int selected_section_y = 0;
         public Tile selected_tile = new Tile(0);
 
+        // MVP = MapViewPanel
+        //private int MVP_zoom = 1.0f;
+        private int MVP_x_shift = 0;
+        private int MVP_y_shift = 0;
+
+        // LVP = LayerViewPanel
+        private int LVP_initial_offset = 10;
+        private int LVP_section_display_DIM = (int)(Tile.DIM * Section.DIM * 0.25);
+        public float LVP_zoom = 0.5f;
+        private int LVP_x_shift = 0;
+        private int LVP_y_shift = 0;
+
         // MapViewMatrix == Orthographics Transformation Matrix
         public Matrix MapViewMatrix(float offset_x, float offset_y)
         {
@@ -207,11 +219,6 @@ namespace BM64_LevelCreator
             this.EnemyID_TextBox.Text = String.Format("{0:X}", selected_tile.nibbles[1]);
             this.ObjectID_TextBox.Text = String.Format("{0:X}", selected_tile.get_obj_ID());
         }
-
-        // MVP = MapViewPanel
-        //private int MVP_zoom = 1.0f;
-        private int MVP_x_shift = 0;
-        private int MVP_y_shift = 0;
         private void MapViewPanel_Paint(object sender, PaintEventArgs e)
         {
             // Creating a Graphics Object when the "Paint" thing in the Form is called
@@ -250,18 +257,6 @@ namespace BM64_LevelCreator
             // Drawing a Custom Border
             draw_boundary_box(g, MapViewPanel.ClientSize.Width, MapViewPanel.ClientSize.Height);
         }
-
-        public void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        // LVP = LayerOverviewPanel
-        private int LVP_initial_offset = 10;
-        private int LVP_section_display_DIM = (int)(Tile.DIM * Section.DIM * 0.25);
-        public float LVP_zoom = 0.5f;
-        private int LVP_x_shift = 0;
-        private int LVP_y_shift = 0;
         private void LayerViewPanel_Paint(object sender, PaintEventArgs e)
         {
             // Creating a Graphics Object when the "Paint" thing in the Form is called
@@ -325,26 +320,6 @@ namespace BM64_LevelCreator
             LayerViewPanel.Refresh();
         }
 
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void SectionViewPanel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void LayerViewPanel_Scroll(object sender, ScrollEventArgs e)
-        {
-            // doesnt trigger ?
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void LayerID_NumUpDown_ValueChanged(object sender, EventArgs e)
         {
             // update the selected layer correctly
@@ -373,10 +348,6 @@ namespace BM64_LevelCreator
             MapViewPanel.Refresh();
         }
 
-        private void MapView_DPad_PicBox_Click(object sender, EventArgs e)
-        {
-        }
-
         private void MapView_DPad_PicBox_MouseClick(object sender, MouseEventArgs e)
         {
             // translate click coordinates into polar coordinates around the img center
@@ -397,10 +368,6 @@ namespace BM64_LevelCreator
 
             // and update the panel
             MapViewPanel.Refresh();
-        }
-
-        private void LayerView_DPad_PicBox_Click(object sender, EventArgs e)
-        {
         }
 
         private void LayerView_DPad_PicBox_MouseClick(object sender, MouseEventArgs e)
@@ -440,16 +407,6 @@ namespace BM64_LevelCreator
                 LVP_y_shift = (int)(LVP_y_shift / zoom_change);
             }
             LayerViewPanel.Refresh();
-        }
-
-        private void SectionCoords_TextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label8_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)
@@ -584,21 +541,5 @@ namespace BM64_LevelCreator
                 Console.WriteLine("Couldn't rip files!");
             }
         }
-
-        private void MapNames_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void splitter1_SplitterMoved(object sender, SplitterEventArgs e)
-        {
-
-        }
-
-        private void label12_Click(object sender, EventArgs e)
-        {
-
-        }
-
     }
 }
