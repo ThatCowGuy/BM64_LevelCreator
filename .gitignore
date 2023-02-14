@@ -10,6 +10,7 @@ BM64_Dump/
 ## 3D stuff
 *.obj
 *.mtl
+textures/
 ## Stupid Stuff
 *.Identifier
 

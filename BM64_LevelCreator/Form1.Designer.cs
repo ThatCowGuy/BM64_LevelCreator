@@ -31,43 +31,45 @@ namespace BM64_LevelCreator
         {
             this.MapViewPanel = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.LayerView_Zoom_PicBox = new System.Windows.Forms.PictureBox();
+            this.MapView_DPad_PicBox = new System.Windows.Forms.PictureBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.SectionCoords_TextBox = new System.Windows.Forms.TextBox();
+            this.LayerID_NumUpDown = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.LayerView_DPad_PicBox = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.LayerViewPanel = new System.Windows.Forms.Panel();
-            this.LoadFileButton = new System.Windows.Forms.Button();
+            this.LoadMapFile_Button = new System.Windows.Forms.Button();
             this.SectionViewPanel = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.label11 = new System.Windows.Forms.Label();
             this.TileSelectPanel = new System.Windows.Forms.Panel();
             this.TileInfoPanel = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.ObjectID_TextBox = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.EnemyID_TextBox = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.Export2OBJ_Button = new System.Windows.Forms.Button();
+            this.BuildROM_Button = new System.Windows.Forms.Button();
+            this.MapNames_ComboBox = new System.Windows.Forms.ComboBox();
+            this.RipFiles_Button = new System.Windows.Forms.Button();
+            this.SaveMapFile_Button = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
+            this.TextureSelectPanel = new System.Windows.Forms.Panel();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LayerView_Zoom_PicBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MapView_DPad_PicBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LayerID_NumUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LayerView_DPad_PicBox)).BeginInit();
             this.panel4.SuspendLayout();
             this.TileInfoPanel.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -86,48 +88,47 @@ namespace BM64_LevelCreator
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.pictureBox3);
-            this.panel2.Controls.Add(this.pictureBox1);
+            this.panel2.Controls.Add(this.LayerView_Zoom_PicBox);
+            this.panel2.Controls.Add(this.MapView_DPad_PicBox);
             this.panel2.Controls.Add(this.label7);
             this.panel2.Controls.Add(this.label5);
-            this.panel2.Controls.Add(this.textBox1);
-            this.panel2.Controls.Add(this.numericUpDown1);
+            this.panel2.Controls.Add(this.SectionCoords_TextBox);
+            this.panel2.Controls.Add(this.LayerID_NumUpDown);
             this.panel2.Controls.Add(this.label6);
             this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.pictureBox2);
+            this.panel2.Controls.Add(this.LayerView_DPad_PicBox);
             this.panel2.Controls.Add(this.MapViewPanel);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.LayerViewPanel);
-            this.panel2.Location = new System.Drawing.Point(370, 56);
+            this.panel2.Location = new System.Drawing.Point(463, 56);
             this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(357, 485);
             this.panel2.TabIndex = 1;
             // 
-            // pictureBox3
+            // LayerView_Zoom_PicBox
             // 
-            this.pictureBox3.Image = global::BM64_LevelCreator.Properties.Resources.Zoom;
-            this.pictureBox3.Location = new System.Drawing.Point(279, 411);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(50, 25);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox3.TabIndex = 11;
-            this.pictureBox3.TabStop = false;
-            this.pictureBox3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox3_MouseClick);
+            this.LayerView_Zoom_PicBox.Image = global::BM64_LevelCreator.Properties.Resources.Zoom;
+            this.LayerView_Zoom_PicBox.Location = new System.Drawing.Point(279, 411);
+            this.LayerView_Zoom_PicBox.Margin = new System.Windows.Forms.Padding(2);
+            this.LayerView_Zoom_PicBox.Name = "LayerView_Zoom_PicBox";
+            this.LayerView_Zoom_PicBox.Size = new System.Drawing.Size(50, 25);
+            this.LayerView_Zoom_PicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.LayerView_Zoom_PicBox.TabIndex = 11;
+            this.LayerView_Zoom_PicBox.TabStop = false;
+            this.LayerView_Zoom_PicBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LayerView_Zoom_PicBox_MouseClick);
             // 
-            // pictureBox1
+            // MapView_DPad_PicBox
             // 
-            this.pictureBox1.Image = global::BM64_LevelCreator.Properties.Resources.DPad;
-            this.pictureBox1.Location = new System.Drawing.Point(278, 89);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(61, 61);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 7;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-            this.pictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseClick);
+            this.MapView_DPad_PicBox.Image = global::BM64_LevelCreator.Properties.Resources.DPad;
+            this.MapView_DPad_PicBox.Location = new System.Drawing.Point(278, 89);
+            this.MapView_DPad_PicBox.Margin = new System.Windows.Forms.Padding(2);
+            this.MapView_DPad_PicBox.Name = "MapView_DPad_PicBox";
+            this.MapView_DPad_PicBox.Size = new System.Drawing.Size(61, 61);
+            this.MapView_DPad_PicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.MapView_DPad_PicBox.TabIndex = 7;
+            this.MapView_DPad_PicBox.TabStop = false;
+            this.MapView_DPad_PicBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MapView_DPad_PicBox_MouseClick);
             // 
             // label7
             // 
@@ -152,28 +153,27 @@ namespace BM64_LevelCreator
             this.label5.Size = new System.Drawing.Size(44, 17);
             this.label5.TabIndex = 3;
             this.label5.Text = "Layer";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
-            // textBox1
+            // SectionCoords_TextBox
             // 
-            this.textBox1.BackColor = System.Drawing.Color.White;
-            this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(278, 286);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(62, 20);
-            this.textBox1.TabIndex = 9;
-            this.textBox1.Text = "( 0 | 0 )";
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.SectionCoords_TextBox.BackColor = System.Drawing.Color.White;
+            this.SectionCoords_TextBox.Enabled = false;
+            this.SectionCoords_TextBox.Location = new System.Drawing.Point(278, 286);
+            this.SectionCoords_TextBox.Margin = new System.Windows.Forms.Padding(2);
+            this.SectionCoords_TextBox.Name = "SectionCoords_TextBox";
+            this.SectionCoords_TextBox.Size = new System.Drawing.Size(62, 20);
+            this.SectionCoords_TextBox.TabIndex = 9;
+            this.SectionCoords_TextBox.Text = "( 0 | 0 )";
+            this.SectionCoords_TextBox.TextChanged += new System.EventHandler(this.SectionCoords_TextBox_TextChanged);
             // 
-            // numericUpDown1
+            // LayerID_NumUpDown
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(278, 56);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(2);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(61, 20);
-            this.numericUpDown1.TabIndex = 2;
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            this.LayerID_NumUpDown.Location = new System.Drawing.Point(278, 56);
+            this.LayerID_NumUpDown.Margin = new System.Windows.Forms.Padding(2);
+            this.LayerID_NumUpDown.Name = "LayerID_NumUpDown";
+            this.LayerID_NumUpDown.Size = new System.Drawing.Size(61, 20);
+            this.LayerID_NumUpDown.TabIndex = 2;
+            this.LayerID_NumUpDown.ValueChanged += new System.EventHandler(this.LayerID_NumUpDown_ValueChanged);
             // 
             // label6
             // 
@@ -198,20 +198,18 @@ namespace BM64_LevelCreator
             this.label1.Size = new System.Drawing.Size(94, 17);
             this.label1.TabIndex = 1;
             this.label1.Text = "Full Map View";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
-            // pictureBox2
+            // LayerView_DPad_PicBox
             // 
-            this.pictureBox2.Image = global::BM64_LevelCreator.Properties.Resources.DPad;
-            this.pictureBox2.Location = new System.Drawing.Point(279, 316);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(61, 61);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox2.TabIndex = 8;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
-            this.pictureBox2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseClick);
+            this.LayerView_DPad_PicBox.Image = global::BM64_LevelCreator.Properties.Resources.DPad;
+            this.LayerView_DPad_PicBox.Location = new System.Drawing.Point(279, 316);
+            this.LayerView_DPad_PicBox.Margin = new System.Windows.Forms.Padding(2);
+            this.LayerView_DPad_PicBox.Name = "LayerView_DPad_PicBox";
+            this.LayerView_DPad_PicBox.Size = new System.Drawing.Size(61, 61);
+            this.LayerView_DPad_PicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.LayerView_DPad_PicBox.TabIndex = 8;
+            this.LayerView_DPad_PicBox.TabStop = false;
+            this.LayerView_DPad_PicBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LayerView_DPad_PicBox_MouseClick);
             // 
             // label3
             // 
@@ -224,7 +222,6 @@ namespace BM64_LevelCreator
             this.label3.Size = new System.Drawing.Size(103, 17);
             this.label3.TabIndex = 1;
             this.label3.Text = "Selected Layer";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // LayerViewPanel
             // 
@@ -234,21 +231,20 @@ namespace BM64_LevelCreator
             this.LayerViewPanel.Name = "LayerViewPanel";
             this.LayerViewPanel.Size = new System.Drawing.Size(261, 200);
             this.LayerViewPanel.TabIndex = 0;
-            this.LayerViewPanel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.LayerOverviewPanel_Scroll);
-            this.LayerViewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.LayerOverviewPanel_Paint);
-            this.LayerViewPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LayerOverviewPanel_MouseClick);
+            this.LayerViewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.LayerViewPanel_Paint);
+            this.LayerViewPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LayerViewPanel_MouseClick);
             // 
-            // LoadFileButton
+            // LoadMapFile_Button
             // 
-            this.LoadFileButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LoadFileButton.Location = new System.Drawing.Point(382, 5);
-            this.LoadFileButton.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
-            this.LoadFileButton.Name = "LoadFileButton";
-            this.LoadFileButton.Size = new System.Drawing.Size(69, 24);
-            this.LoadFileButton.TabIndex = 4;
-            this.LoadFileButton.Text = "Load Map";
-            this.LoadFileButton.UseVisualStyleBackColor = true;
-            this.LoadFileButton.Click += new System.EventHandler(this.LoadFileButton_Click);
+            this.LoadMapFile_Button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LoadMapFile_Button.Location = new System.Drawing.Point(382, 5);
+            this.LoadMapFile_Button.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.LoadMapFile_Button.Name = "LoadMapFile_Button";
+            this.LoadMapFile_Button.Size = new System.Drawing.Size(69, 24);
+            this.LoadMapFile_Button.TabIndex = 4;
+            this.LoadMapFile_Button.Text = "Load Map";
+            this.LoadMapFile_Button.UseVisualStyleBackColor = true;
+            this.LoadMapFile_Button.Click += new System.EventHandler(this.LoadMapFile_Button_Click);
             // 
             // SectionViewPanel
             // 
@@ -257,12 +253,13 @@ namespace BM64_LevelCreator
             this.SectionViewPanel.Name = "SectionViewPanel";
             this.SectionViewPanel.Size = new System.Drawing.Size(256, 256);
             this.SectionViewPanel.TabIndex = 2;
-            this.SectionViewPanel.Click += new System.EventHandler(this.SectionViewPanel_Click);
             this.SectionViewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.SectionViewPanel_Paint);
             this.SectionViewPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SectionViewPanel_MouseClick);
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.TextureSelectPanel);
+            this.panel4.Controls.Add(this.label12);
             this.panel4.Controls.Add(this.label11);
             this.panel4.Controls.Add(this.TileSelectPanel);
             this.panel4.Controls.Add(this.TileInfoPanel);
@@ -272,7 +269,7 @@ namespace BM64_LevelCreator
             this.panel4.Location = new System.Drawing.Point(12, 56);
             this.panel4.Margin = new System.Windows.Forms.Padding(2);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(354, 485);
+            this.panel4.Size = new System.Drawing.Size(430, 485);
             this.panel4.TabIndex = 3;
             // 
             // label11
@@ -303,16 +300,16 @@ namespace BM64_LevelCreator
             this.TileInfoPanel.Controls.Add(this.panel3);
             this.TileInfoPanel.Location = new System.Drawing.Point(4, 317);
             this.TileInfoPanel.Name = "TileInfoPanel";
-            this.TileInfoPanel.Size = new System.Drawing.Size(256, 144);
+            this.TileInfoPanel.Size = new System.Drawing.Size(255, 144);
             this.TileInfoPanel.TabIndex = 3;
             this.TileInfoPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.TileInfoPanel_Paint);
             // 
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.Transparent;
-            this.panel3.Controls.Add(this.textBox4);
+            this.panel3.Controls.Add(this.ObjectID_TextBox);
             this.panel3.Controls.Add(this.textBox2);
-            this.panel3.Controls.Add(this.textBox3);
+            this.panel3.Controls.Add(this.EnemyID_TextBox);
             this.panel3.Controls.Add(this.label8);
             this.panel3.Controls.Add(this.label9);
             this.panel3.Controls.Add(this.label10);
@@ -321,13 +318,13 @@ namespace BM64_LevelCreator
             this.panel3.Size = new System.Drawing.Size(182, 76);
             this.panel3.TabIndex = 3;
             // 
-            // textBox4
+            // ObjectID_TextBox
             // 
-            this.textBox4.Location = new System.Drawing.Point(82, 50);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(39, 20);
-            this.textBox4.TabIndex = 9;
-            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
+            this.ObjectID_TextBox.Location = new System.Drawing.Point(82, 50);
+            this.ObjectID_TextBox.Name = "ObjectID_TextBox";
+            this.ObjectID_TextBox.Size = new System.Drawing.Size(39, 20);
+            this.ObjectID_TextBox.TabIndex = 9;
+            this.ObjectID_TextBox.TextChanged += new System.EventHandler(this.ObjectID_TextBox_TextChanged);
             // 
             // textBox2
             // 
@@ -337,13 +334,13 @@ namespace BM64_LevelCreator
             this.textBox2.TabIndex = 7;
             this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
-            // textBox3
+            // EnemyID_TextBox
             // 
-            this.textBox3.Location = new System.Drawing.Point(82, 25);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(39, 20);
-            this.textBox3.TabIndex = 8;
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
+            this.EnemyID_TextBox.Location = new System.Drawing.Point(82, 25);
+            this.EnemyID_TextBox.Name = "EnemyID_TextBox";
+            this.EnemyID_TextBox.Size = new System.Drawing.Size(39, 20);
+            this.EnemyID_TextBox.TabIndex = 8;
+            this.EnemyID_TextBox.TextChanged += new System.EventHandler(this.EnemyID_TextBox_TextChanged);
             // 
             // label8
             // 
@@ -356,7 +353,6 @@ namespace BM64_LevelCreator
             this.label8.Size = new System.Drawing.Size(36, 20);
             this.label8.TabIndex = 4;
             this.label8.Text = "???";
-            this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
             // label9
             // 
@@ -408,76 +404,97 @@ namespace BM64_LevelCreator
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.button4);
-            this.panel1.Controls.Add(this.button3);
-            this.panel1.Controls.Add(this.comboBox1);
-            this.panel1.Controls.Add(this.button2);
-            this.panel1.Controls.Add(this.button1);
-            this.panel1.Controls.Add(this.LoadFileButton);
+            this.panel1.Controls.Add(this.Export2OBJ_Button);
+            this.panel1.Controls.Add(this.BuildROM_Button);
+            this.panel1.Controls.Add(this.MapNames_ComboBox);
+            this.panel1.Controls.Add(this.RipFiles_Button);
+            this.panel1.Controls.Add(this.SaveMapFile_Button);
+            this.panel1.Controls.Add(this.LoadMapFile_Button);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(687, 39);
             this.panel1.TabIndex = 6;
             // 
-            // button4
+            // Export2OBJ_Button
             // 
-            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(541, 5);
-            this.button4.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(69, 24);
-            this.button4.TabIndex = 9;
-            this.button4.Text = "Export OBJ";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.Export2OBJ_Button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Export2OBJ_Button.Location = new System.Drawing.Point(541, 5);
+            this.Export2OBJ_Button.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.Export2OBJ_Button.Name = "Export2OBJ_Button";
+            this.Export2OBJ_Button.Size = new System.Drawing.Size(69, 24);
+            this.Export2OBJ_Button.TabIndex = 9;
+            this.Export2OBJ_Button.Text = "Export OBJ";
+            this.Export2OBJ_Button.UseVisualStyleBackColor = true;
+            this.Export2OBJ_Button.Click += new System.EventHandler(this.Export2OBJ_Button_Click);
             // 
-            // button3
+            // BuildROM_Button
             // 
-            this.button3.Location = new System.Drawing.Point(75, 6);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(69, 23);
-            this.button3.TabIndex = 8;
-            this.button3.Text = "Build ROM";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.BuildROM_Button.Location = new System.Drawing.Point(75, 6);
+            this.BuildROM_Button.Name = "BuildROM_Button";
+            this.BuildROM_Button.Size = new System.Drawing.Size(69, 23);
+            this.BuildROM_Button.TabIndex = 8;
+            this.BuildROM_Button.Text = "Build ROM";
+            this.BuildROM_Button.UseVisualStyleBackColor = true;
+            this.BuildROM_Button.Click += new System.EventHandler(this.BuildROM_Button_Click);
             // 
-            // comboBox1
+            // MapNames_ComboBox
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(180, 6);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(190, 21);
-            this.comboBox1.TabIndex = 7;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.MapNames_ComboBox.FormattingEnabled = true;
+            this.MapNames_ComboBox.Location = new System.Drawing.Point(180, 6);
+            this.MapNames_ComboBox.Name = "MapNames_ComboBox";
+            this.MapNames_ComboBox.Size = new System.Drawing.Size(190, 21);
+            this.MapNames_ComboBox.TabIndex = 7;
+            this.MapNames_ComboBox.SelectedIndexChanged += new System.EventHandler(this.MapNames_ComboBox_SelectedIndexChanged);
             // 
-            // button2
+            // RipFiles_Button
             // 
-            this.button2.Location = new System.Drawing.Point(0, 6);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(69, 23);
-            this.button2.TabIndex = 6;
-            this.button2.Text = "Rip Files";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            this.RipFiles_Button.Location = new System.Drawing.Point(0, 6);
+            this.RipFiles_Button.Name = "RipFiles_Button";
+            this.RipFiles_Button.Size = new System.Drawing.Size(69, 23);
+            this.RipFiles_Button.TabIndex = 6;
+            this.RipFiles_Button.Text = "Rip Files";
+            this.RipFiles_Button.UseVisualStyleBackColor = true;
+            this.RipFiles_Button.Click += new System.EventHandler(this.RipFiles_Button_Click_1);
             // 
-            // button1
+            // SaveMapFile_Button
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(462, 5);
-            this.button1.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(69, 24);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "Save Map";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.SaveMapFile_Button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SaveMapFile_Button.Location = new System.Drawing.Point(462, 5);
+            this.SaveMapFile_Button.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.SaveMapFile_Button.Name = "SaveMapFile_Button";
+            this.SaveMapFile_Button.Size = new System.Drawing.Size(69, 24);
+            this.SaveMapFile_Button.TabIndex = 5;
+            this.SaveMapFile_Button.Text = "Save Map";
+            this.SaveMapFile_Button.UseVisualStyleBackColor = true;
+            this.SaveMapFile_Button.Click += new System.EventHandler(this.SaveMapFile_Button_Click_1);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label12.Location = new System.Drawing.Point(273, 297);
+            this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(56, 17);
+            this.label12.TabIndex = 5;
+            this.label12.Text = "Texture";
+            // 
+            // TextureSelectPanel
+            // 
+            this.TextureSelectPanel.BackColor = System.Drawing.Color.Gray;
+            this.TextureSelectPanel.Location = new System.Drawing.Point(276, 318);
+            this.TextureSelectPanel.Name = "TextureSelectPanel";
+            this.TextureSelectPanel.Size = new System.Drawing.Size(64, 143);
+            this.TextureSelectPanel.TabIndex = 4;
+            this.TextureSelectPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.TextureSelectPanel_Paint);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-            this.ClientSize = new System.Drawing.Size(750, 552);
+            this.ClientSize = new System.Drawing.Size(831, 552);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel2);
@@ -487,10 +504,10 @@ namespace BM64_LevelCreator
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LayerView_Zoom_PicBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MapView_DPad_PicBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LayerID_NumUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LayerView_DPad_PicBox)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             this.TileInfoPanel.ResumeLayout(false);
@@ -498,7 +515,6 @@ namespace BM64_LevelCreator
             this.panel3.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
 
         #endregion
@@ -514,29 +530,31 @@ namespace BM64_LevelCreator
         private System.Windows.Forms.Panel TileInfoPanel;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.Button LoadFileButton;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.NumericUpDown LayerID_NumUpDown;
+        private System.Windows.Forms.Button LoadMapFile_Button;
+        private System.Windows.Forms.PictureBox MapView_DPad_PicBox;
+        private System.Windows.Forms.PictureBox LayerView_DPad_PicBox;
+        private System.Windows.Forms.TextBox SectionCoords_TextBox;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Panel TileSelectPanel;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox LayerView_Zoom_PicBox;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox ObjectID_TextBox;
+        private System.Windows.Forms.TextBox EnemyID_TextBox;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button SaveMapFile_Button;
+        private System.Windows.Forms.Button RipFiles_Button;
+        private System.Windows.Forms.ComboBox MapNames_ComboBox;
+        private System.Windows.Forms.Button BuildROM_Button;
+        private System.Windows.Forms.Button Export2OBJ_Button;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Panel TextureSelectPanel;
     }
 }
 

@@ -14,6 +14,7 @@ namespace BM64_LevelCreator
         public static int DIM = 32;
         public static List<Image> std_images = new List<Image>();
         public static List<Image> obj_images = new List<Image>();
+        public static List<string> tex_image_paths = new List<string>();
 
         public byte[] nibbles = new byte[4];
 
@@ -73,6 +74,23 @@ namespace BM64_LevelCreator
             std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Wall.png"), imgSize));
 
             obj_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Object.png"), imgSize));
+
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/Air.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/Floor.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/Warp.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/RampD.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/RampU.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/RampR.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/RampL.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/WallCorner_UL.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/WallCorner_DL.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/KillZone.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/Effect_1.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/Effect_2.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/WallCorner_UR.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/WallCorner_DR.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/UNK_0xE.png");
+            tex_image_paths.Add("BM64_LevelCreator/assets/images/Wall.png");
         }
 
         public int concat_nibbles()
@@ -340,18 +358,64 @@ namespace BM64_LevelCreator
         }
         // input: 4 corners of a quad IN COUNTERCLOCKWISE ORDER
         // output: String that fully defines the quad for OBJ-FILE
-        public static string string_tri_from_vtx(string cornerA, string cornerB, string cornerC, int vtx_cnt)
+        public static string string_tri_from_vtx(string cornerA, string cornerB, string cornerC, string ori, int vtx_cnt, int uv_vtx_cnt)
         {
-            string tri = String.Format("{0}\n{1}\n{2}\nf {3} {4} {5}",
-                cornerA, cornerB, cornerC, vtx_cnt + 1, vtx_cnt + 2, vtx_cnt + 3);
+            string tri = "";
+            // add in the xyz vertices
+            tri += String.Format("{0}\n{1}\n{2}\n", cornerA, cornerB, cornerC);
+            switch(ori)
+            {  
+                // careful, in UV Y+ is UP !!!
+                case ("WALL_C_UL"):
+                    // vtx_BL, vtx_BR, vtx_TR
+                    tri += String.Format("vt {0} {1}\n", 0, 0);
+                    tri += String.Format("vt {0} {1}\n", 1, 0);
+                    tri += String.Format("vt {0} {1}\n", 1, 1);
+                    break;
+                case ("WALL_C_DL"):
+                    // vtx_BR, vtx_TR, vtx_TL
+                    tri += String.Format("vt {0} {1}\n", 1, 0);
+                    tri += String.Format("vt {0} {1}\n", 1, 1);
+                    tri += String.Format("vt {0} {1}\n", 0, 1);
+                    break;
+                case ("WALL_C_UR"):
+                    // vtx_BR, vtx_BL, vtx_TL
+                    tri += String.Format("vt {0} {1}\n", 1, 0);
+                    tri += String.Format("vt {0} {1}\n", 0, 0);
+                    tri += String.Format("vt {0} {1}\n", 0, 1);
+                    break;
+                case ("WALL_C_DR"):
+                    // vtx_TR, vtx_BL, vtx_TL
+                    tri += String.Format("vt {0} {1}\n", 1, 1);
+                    tri += String.Format("vt {0} {1}\n", 0, 0);
+                    tri += String.Format("vt {0} {1}\n", 0, 1);
+                    break;
+            }
+            // add in the tri, built from v/vt vertices
+            tri += String.Format("f {0}/{1} {2}/{3} {4}/{5}",
+                vtx_cnt + 1, uv_vtx_cnt + 1,
+                vtx_cnt + 2, uv_vtx_cnt + 2,
+                vtx_cnt + 3, uv_vtx_cnt + 3);
+            // and return the tri
             return tri;
         }
         // input: 3 corners of a tri IN COUNTERCLOCKWISE ORDER
         // output: String that fully defines the tri for OBJ-FILE
-        public static string string_quad_from_vtx(string cornerA, string cornerB, string cornerC, string cornerD, int vtx_cnt)
+        public static string string_quad_from_vtx(string cornerA, string cornerB, string cornerC, string cornerD, int vtx_cnt, int uv_vtx_cnt)
         {
-            string quad = String.Format("{0}\n{1}\n{2}\n{3}\nf {4} {5} {6} {7}",
-                cornerA, cornerB, cornerC, cornerD, vtx_cnt + 1, vtx_cnt + 2, vtx_cnt + 3, vtx_cnt + 4);
+            String quad = "";
+            // add in the xyz vertices
+            quad += String.Format("{0}\n{1}\n{2}\n{3}\n", cornerA, cornerB, cornerC, cornerD);
+            // add in the uv vertices
+            quad += String.Format("vt {0} {1}\n", 0, 1);
+            quad += String.Format("vt {0} {1}\n", 0, 0);
+            quad += String.Format("vt {0} {1}\n", 1, 0);
+            quad += String.Format("vt {0} {1}\n", 1, 1);
+            // add in the quad, built from v/vt vertices
+            quad += String.Format("f {0}/{1} {2}/{3} {4}/{5} {6}/{7}",
+                vtx_cnt + 1, uv_vtx_cnt + 1, vtx_cnt + 2, uv_vtx_cnt + 2,
+                vtx_cnt + 3, uv_vtx_cnt + 3, vtx_cnt + 4, uv_vtx_cnt + 4);
+            // and return the quad
             return quad;
         }
 
@@ -492,18 +556,45 @@ namespace BM64_LevelCreator
             target.Close();
             System.Console.WriteLine("Finished Writing to {0}", filename);
         }
-
-        public void dump_as_obj(string filename)
+        public void dump_as_mtl(string MTL_filename)
+        {
+            System.Console.WriteLine("Generating MTL-FILE...");
+            System.IO.StreamWriter MTL_file = new System.IO.StreamWriter(System.IO.File.Open(MTL_filename, System.IO.FileMode.Create));
+            MTL_file.Flush();
+            // for every tiletype (except AIR) we create a new material and write it to the MTL_file
+            for (int i = 0x1; i <= 0xF; i++)
+            {
+                MTL_file.WriteLine(String.Format("newmtl {0}", Tile.CollisionID[i]));
+                MTL_file.WriteLine("Ka 1.000000 1.000000 1.000000"); // Illumination (1.00 is full brightness)
+                MTL_file.WriteLine("Kd 0.640000 0.640000 0.640000"); // Diffuse Reflectivity (0.64 is some standard)
+                MTL_file.WriteLine("Ks 0.500000 0.500000 0.500000"); // Specular Reflectivity (0.50 is some standard)
+                MTL_file.WriteLine("illum 2"); // Illumination Mode (2 is "Highlight on")
+                MTL_file.WriteLine("Ns 96.078431"); // Specular Exponent for Specular Highlights (Copied val from Blender...)
+                MTL_file.WriteLine("Ni 1.000000"); // Optical Density (1.00 = No Effect)
+                MTL_file.WriteLine(String.Format("map_Kd {0}", Tile.tex_image_paths[i]));
+            }
+            // and dont FORGET TO CLOSE IT
+            MTL_file.Close();
+        }
+        public void dump_as_obj(string OBJ_filename)
         {
             System.Console.WriteLine("Translating Map into OBJ-FILE...");
-            System.IO.StreamWriter file = new System.IO.StreamWriter(System.IO.File.Open(filename, System.IO.FileMode.Create));
-            file.Flush();
+            System.IO.StreamWriter OBJ_file = new System.IO.StreamWriter(System.IO.File.Open(OBJ_filename, System.IO.FileMode.Create));
+            OBJ_file.Flush();
+
+            // first off, we create the MTL FILE to define the textures
+            string MTL_filename = OBJ_filename.Substring(0, (OBJ_filename.Length - 4)) + ".mtl";
+            this.dump_as_mtl(MTL_filename);
+            // then we include the MTL FILE into our OBJ FILE
+            OBJ_file.WriteLine(String.Format("mtllib {0}", MTL_filename));
+            OBJ_file.WriteLine("s off"); // just always
 
             // this makes comparisons MUCH more readable
             List<int> FloorTiles = new List<int> { 0x1, 0x2, 0x9, 0xA, 0xB };
             List<int> UnobstructedTiles = new List<int> { 0x0, 0x1, 0x2, 0x9, 0xA, 0xB };
             // init vertex count (need to keep track)
             int vtx_cnt = 0;
+            int uv_vtx_cnt = 0;
             // also declaring these here because C# is getting an
             // Aneurysm if I do it inside the switch cases.....
             int ramp_x, ramp_y;
@@ -549,26 +640,34 @@ namespace BM64_LevelCreator
                     if (fake_layer.check_LEFT_neighbor_for(x, y, UnobstructedTiles))
                     {
                         // add the quad that defines a LEFT wall
-                        file.WriteLine(string_quad_from_vtx(vtx_TL, vtx_BL, vtx_BL_up, vtx_TL_up, vtx_cnt));
+                        OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF]));
+                        OBJ_file.WriteLine(string_quad_from_vtx(vtx_TL_up, vtx_TL, vtx_BL, vtx_BL_up, vtx_cnt, uv_vtx_cnt));
                         vtx_cnt += 4;
+                        uv_vtx_cnt += 4;
                     }
                     if (fake_layer.check_RIGHT_neighbor_for(x, y, UnobstructedTiles))
                     {
                         // add the quad that defines a RIGHT wall
-                        file.WriteLine(string_quad_from_vtx(vtx_BR, vtx_TR, vtx_TR_up, vtx_BR_up, vtx_cnt));
+                        OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF]));
+                        OBJ_file.WriteLine(string_quad_from_vtx(vtx_BR_up, vtx_BR, vtx_TR, vtx_TR_up, vtx_cnt, uv_vtx_cnt));
                         vtx_cnt += 4;
+                        uv_vtx_cnt += 4;
                     }
                     if (fake_layer.check_NORTH_neighbor_for(x, y, UnobstructedTiles))
                     {
                         // add the quad that defines a LEFT wall
-                        file.WriteLine(string_quad_from_vtx(vtx_TR, vtx_TL, vtx_TL_up, vtx_TR_up, vtx_cnt));
+                        OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF]));
+                        OBJ_file.WriteLine(string_quad_from_vtx(vtx_TR_up, vtx_TR, vtx_TL, vtx_TL_up, vtx_cnt, uv_vtx_cnt));
                         vtx_cnt += 4;
+                        uv_vtx_cnt += 4;
                     }
                     if (fake_layer.check_SOUTH_neighbor_for(x, y, UnobstructedTiles))
                     {
                         // add the quad that defines a LEFT wall
-                        file.WriteLine(string_quad_from_vtx(vtx_BL, vtx_BR, vtx_BR_up, vtx_BL_up, vtx_cnt));
+                        OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF]));
+                        OBJ_file.WriteLine(string_quad_from_vtx(vtx_BL_up, vtx_BL, vtx_BR, vtx_BR_up, vtx_cnt, uv_vtx_cnt));
                         vtx_cnt += 4;
+                        uv_vtx_cnt += 4;
                     }
                 }
             }
@@ -608,8 +707,10 @@ namespace BM64_LevelCreator
                             case (0xA): // Effect_1
                             case (0xB): // Effect_2
                                 // add the quad that defines the tile on the bottom
-                                file.WriteLine(string_quad_from_vtx(vtx_TL, vtx_BL, vtx_BR, vtx_TR, vtx_cnt));
+                                OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
+                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_TL, vtx_BL, vtx_BR, vtx_TR, vtx_cnt, uv_vtx_cnt));
                                 vtx_cnt += 4;
+                                uv_vtx_cnt += 4;
                                 break;
 
                             case (0x3): // D-Ramp
@@ -645,8 +746,10 @@ namespace BM64_LevelCreator
                                     String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0), upper_z, (y + i + 1));
                                     String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1), upper_z, (y + i + 1));
                                     // I hate this
-                                    file.WriteLine(string_quad_from_vtx(ramp_vtx_TL, ramp_vtx_BL_up, ramp_vtx_BR_up, ramp_vtx_TR, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(ramp_vtx_TL, ramp_vtx_BL_up, ramp_vtx_BR_up, ramp_vtx_TR, vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 4;
+                                    uv_vtx_cnt += 4;
                                 }
                                 break;
                             case (0x4): // U-Ramp
@@ -682,8 +785,10 @@ namespace BM64_LevelCreator
                                     String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0), upper_z, (y - i + 1));
                                     String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1), upper_z, (y - i + 1));
                                     // I hate this
-                                    file.WriteLine(string_quad_from_vtx(ramp_vtx_TL_up, ramp_vtx_BL, ramp_vtx_BR, ramp_vtx_TR_up, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(ramp_vtx_TL_up, ramp_vtx_BL, ramp_vtx_BR, ramp_vtx_TR_up, vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 4;
+                                    uv_vtx_cnt += 4;
                                 }
                                 break;
                             case (0x5): // R-Ramp
@@ -719,8 +824,10 @@ namespace BM64_LevelCreator
                                     String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + i + 0), upper_z, (y + 1));
                                     String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + i + 1), upper_z, (y + 1));
                                     // I hate this
-                                    file.WriteLine(string_quad_from_vtx(ramp_vtx_TL, ramp_vtx_BL, ramp_vtx_BR_up, ramp_vtx_TR_up, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(ramp_vtx_TL, ramp_vtx_BL, ramp_vtx_BR_up, ramp_vtx_TR_up, vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 4;
+                                    uv_vtx_cnt += 4;
                                 }
                                 break;
                             case (0x6): // L-Ramp
@@ -756,8 +863,10 @@ namespace BM64_LevelCreator
                                     String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x - i + 0), upper_z, (y + 1));
                                     String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x - i + 1), upper_z, (y + 1));
                                     // I hate this
-                                    file.WriteLine(string_quad_from_vtx(ramp_vtx_TL_up, ramp_vtx_BL_up, ramp_vtx_BR, ramp_vtx_TR, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(ramp_vtx_TL_up, ramp_vtx_BL_up, ramp_vtx_BR, ramp_vtx_TR, vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 4;
+                                    uv_vtx_cnt += 4;
                                 }
                                 break;
 
@@ -766,23 +875,31 @@ namespace BM64_LevelCreator
                                 // draw the floor tri IFF a floor tile is to the RIGHT or DOWN
                                 if (layer.check_RIGHT_neighbor_for(x, y, FloorTiles) || layer.check_SOUTH_neighbor_for(x, y, FloorTiles))
                                 {
-                                    file.WriteLine(string_tri_from_vtx(vtx_TR, vtx_BL, vtx_BR, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0x1])); // corner floors still use the floor tex
+                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_BL, vtx_BR, vtx_TR, Tile.CollisionID[coll_ID], vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 3;
+                                    uv_vtx_cnt += 3;
                                 }
                                 // add the angled wall
-                                file.WriteLine(string_quad_from_vtx(vtx_TR, vtx_BL, vtx_BL_up, vtx_TR_up, vtx_cnt));
+                                OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF])); // corner walls still use the wall tex
+                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_TR_up, vtx_TR, vtx_BL, vtx_BL_up, vtx_cnt, uv_vtx_cnt));
                                 vtx_cnt += 4;
+                                uv_vtx_cnt += 4;
                                 break;
                             case (0x8): // Wall-Corner DL
                                 // draw the floor tri IFF a floor tile is to the RIGHT or UP
                                 if (layer.check_RIGHT_neighbor_for(x, y, FloorTiles) || layer.check_NORTH_neighbor_for(x, y, FloorTiles))
                                 {
-                                    file.WriteLine(string_tri_from_vtx(vtx_TL, vtx_BR, vtx_TR, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0x1])); // corner floors still use the floor tex
+                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_BR, vtx_TR, vtx_TL, Tile.CollisionID[coll_ID], vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 3;
+                                    uv_vtx_cnt += 3;
                                 }
                                 // add the angled wall
-                                file.WriteLine(string_quad_from_vtx(vtx_BR, vtx_TL, vtx_TL_up, vtx_BR_up, vtx_cnt));
+                                OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF])); // corner walls still use the wall tex
+                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_BR_up, vtx_BR, vtx_TL, vtx_TL_up, vtx_cnt, uv_vtx_cnt));
                                 vtx_cnt += 4;
+                                uv_vtx_cnt += 4;
                                 break;
 
 
@@ -790,23 +907,31 @@ namespace BM64_LevelCreator
                                 // draw the floor tri IFF a floor tile is to the LEFT or DOWN
                                 if (layer.check_LEFT_neighbor_for(x, y, FloorTiles) || layer.check_SOUTH_neighbor_for(x, y, FloorTiles))
                                 {
-                                    file.WriteLine(string_tri_from_vtx(vtx_TL, vtx_BR, vtx_BL, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0x1])); // corner floors still use the floor tex
+                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_BR, vtx_BL, vtx_TL, Tile.CollisionID[coll_ID], vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 3;
+                                    uv_vtx_cnt += 3;
                                 }
                                 // add the angled wall
-                                file.WriteLine(string_quad_from_vtx(vtx_TL, vtx_BR, vtx_BR_up, vtx_TL_up, vtx_cnt));
+                                OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF])); // corner walls still use the wall tex
+                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_TL_up, vtx_TL, vtx_BR, vtx_BR_up, vtx_cnt, uv_vtx_cnt));
                                 vtx_cnt += 4;
+                                uv_vtx_cnt += 4;
                                 break;
                             case (0xD): // Wall-Corner DR
                                 // draw the floor tri IFF a floor tile is to the LEFT or UP
                                 if (layer.check_LEFT_neighbor_for(x, y, FloorTiles) || layer.check_NORTH_neighbor_for(x, y, FloorTiles))
                                 {
-                                    file.WriteLine(string_tri_from_vtx(vtx_TL, vtx_TR, vtx_BL, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0x1])); // corner floors still use the floor tex
+                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_TR, vtx_BL, vtx_TL, Tile.CollisionID[coll_ID], vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 3;
+                                    uv_vtx_cnt += 3;
                                 }
                                 // add the angled wall
-                                file.WriteLine(string_quad_from_vtx(vtx_TR, vtx_BL, vtx_BL_up, vtx_TR_up, vtx_cnt));
+                                OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF])); // corner walls still use the wall tex
+                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_TR_up, vtx_TR, vtx_BL, vtx_BL_up, vtx_cnt, uv_vtx_cnt));
                                 vtx_cnt += 4;
+                                uv_vtx_cnt += 4;
                                 break;
 
 
@@ -815,26 +940,34 @@ namespace BM64_LevelCreator
                                 if (layer.check_LEFT_neighbor_for(x, y, UnobstructedTiles))
                                 {
                                     // add the quad that defines a LEFT wall
-                                    file.WriteLine(string_quad_from_vtx(vtx_TL, vtx_BL, vtx_BL_up, vtx_TL_up, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_TL_up, vtx_TL, vtx_BL, vtx_BL_up, vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 4;
+                                    uv_vtx_cnt += 4;
                                 }
                                 if (layer.check_RIGHT_neighbor_for(x, y, UnobstructedTiles))
                                 {
                                     // add the quad that defines a RIGHT wall
-                                    file.WriteLine(string_quad_from_vtx(vtx_BR, vtx_TR, vtx_TR_up, vtx_BR_up, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_BR_up, vtx_BR, vtx_TR, vtx_TR_up, vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 4;
+                                    uv_vtx_cnt += 4;
                                 }
                                 if (layer.check_NORTH_neighbor_for(x, y, UnobstructedTiles))
                                 {
                                     // add the quad that defines a LEFT wall
-                                    file.WriteLine(string_quad_from_vtx(vtx_TR, vtx_TL, vtx_TL_up, vtx_TR_up, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_TR_up, vtx_TR, vtx_TL, vtx_TL_up, vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 4;
+                                    uv_vtx_cnt += 4;
                                 }
                                 if (layer.check_SOUTH_neighbor_for(x, y, UnobstructedTiles))
                                 {
                                     // add the quad that defines a LEFT wall
-                                    file.WriteLine(string_quad_from_vtx(vtx_BL, vtx_BR, vtx_BR_up, vtx_BL_up, vtx_cnt));
+                                    OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_BL_up, vtx_BL, vtx_BR, vtx_BR_up, vtx_cnt, uv_vtx_cnt));
                                     vtx_cnt += 4;
+                                    uv_vtx_cnt += 4;
                                 }
                                 // checking if I should draw a CEILING UNDER the wall aswell
                                 if (layer.index > 0)
@@ -842,9 +975,11 @@ namespace BM64_LevelCreator
                                     if (UnobstructedTiles.Contains(this.layers[(layer.index - 1)].tile_matrix[x, y]))
                                     {
                                         System.Console.WriteLine("Ceiling");
-                                        // add the quad that defines a CEILING
-                                        file.WriteLine(string_quad_from_vtx(vtx_TL_up, vtx_TR_up, vtx_BR_up, vtx_BL_up, vtx_cnt));
+                                        // add the quad that defines a CEILING (use Floor texture)
+                                        OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0x1]));
+                                        OBJ_file.WriteLine(string_quad_from_vtx(vtx_TL_up, vtx_TR_up, vtx_BR_up, vtx_BL_up, vtx_cnt, uv_vtx_cnt));
                                         vtx_cnt += 4;
+                                        uv_vtx_cnt += 4;
                                     }
                                 }
                                 break;
@@ -854,8 +989,8 @@ namespace BM64_LevelCreator
             }
 
             // and done
-            file.Close();
-            System.Console.WriteLine("Finished Writing to {0}", filename);
+            OBJ_file.Close();
+            System.Console.WriteLine("Finished Writing to {0}", OBJ_filename);
         }
     }
 }

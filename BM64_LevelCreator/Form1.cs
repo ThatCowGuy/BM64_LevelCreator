@@ -75,7 +75,7 @@ namespace BM64_LevelCreator
         {
             InitializeComponent();
 
-            this.comboBox1.DataSource = new List<string>(GlobalData.collision_files.Keys);
+            this.MapNames_ComboBox.DataSource = new List<string>(GlobalData.collision_files.Keys);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -83,12 +83,12 @@ namespace BM64_LevelCreator
             Tile.init_images();
             
             // load the first map from the dropdown as a dummy
-            String filename = GlobalData.collision_files[this.comboBox1.Text];
+            String filename = GlobalData.collision_files[this.MapNames_ComboBox.Text];
             String filepath = GlobalData.BM64_CollisionDir + filename;
             // and load it
             current_map.load_from_File(filepath);
 
-            //current_map.dump_as_obj("../../../test.obj");
+            Tile.tex_image_paths[0x1] = "BM64_LevelCreator/assets/textures/Floor.png";
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -123,6 +123,7 @@ namespace BM64_LevelCreator
             {
                 selected_tile = current_map.layers[selected_layer].sections[sel_section_index].tiles[select_x, select_y].clone();
                 TileInfoPanel.Refresh();
+                TextureSelectPanel.Refresh();
             }
             if (e.Button == MouseButtons.Right)
             {
@@ -139,8 +140,8 @@ namespace BM64_LevelCreator
             int select_y = (int)(e.Y / Tile.DIM);
 
             // some OOB checks
-            if (select_x >= (Tile.DIM * 2)) return;
-            if (select_y >= (Tile.DIM * 2)) return;
+            if (select_x >= 2) return;
+            if (select_y >= 8) return;
 
             // translating the results (the axes are reversed here. Looks cleaner I guess)
             int sel_tile_index = (select_x * 8) + select_y;
@@ -153,7 +154,33 @@ namespace BM64_LevelCreator
             selected_tile.nibbles[3] = (byte) sel_tile_index;
 
             TileInfoPanel.Refresh();
+            TextureSelectPanel.Refresh();
             System.Console.WriteLine("Selected TileType = {0:X4}", selected_tile.concat_nibbles());
+        }
+        private void TileSelectPanel_Paint(object sender, PaintEventArgs e)
+        {
+            // Creating a Graphics Object when the "Paint" thing in the Form is called
+            Graphics g = e.Graphics;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+            Rectangle loc = new Rectangle(0, 0, Tile.DIM, Tile.DIM);
+
+            for (int id = 0; id <= 0xF; id++)
+            {
+                loc.X = Tile.DIM * (id / 0x8);
+                loc.Y = Tile.DIM * (id % 0x8);
+                g.DrawImage(Tile.std_images[id], loc);
+            }
+        }
+        private void TextureSelectPanel_Paint(object sender, PaintEventArgs e)
+        {
+            // Creating a Graphics Object when the "Paint" thing in the Form is called
+            Graphics g = e.Graphics;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+            Rectangle loc = new Rectangle(0, 0, (2 * Tile.DIM), (2 * Tile.DIM));
+
+            g.DrawImage(Tile.std_images[selected_tile.get_coll_ID()], loc);
         }
 
         private void TileInfoPanel_Paint(object sender, PaintEventArgs e)
@@ -177,24 +204,8 @@ namespace BM64_LevelCreator
             g.DrawString(String.Format("Collision: {0}", Tile.CollisionID[selected_tile.get_coll_ID()]), font, textbrush, 65, 36);
 
             this.textBox2.Text = String.Format("{0:X}", selected_tile.nibbles[0]);
-            this.textBox3.Text = String.Format("{0:X}", selected_tile.nibbles[1]);
-            this.textBox4.Text = String.Format("{0:X}", selected_tile.get_obj_ID());
-        }
-
-        private void TileSelectPanel_Paint(object sender, PaintEventArgs e)
-        {
-            // Creating a Graphics Object when the "Paint" thing in the Form is called
-            Graphics g = e.Graphics;
-            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-            Rectangle loc = new Rectangle(0, 0, Tile.DIM, Tile.DIM);
-
-            for (int id = 0; id <= 0xF; id++)
-            {
-                loc.X = Tile.DIM * (id / 0x8);
-                loc.Y = Tile.DIM * (id % 0x8);
-                g.DrawImage(Tile.std_images[id], loc);
-            }
+            this.EnemyID_TextBox.Text = String.Format("{0:X}", selected_tile.nibbles[1]);
+            this.ObjectID_TextBox.Text = String.Format("{0:X}", selected_tile.get_obj_ID());
         }
 
         // MVP = MapViewPanel
@@ -251,7 +262,7 @@ namespace BM64_LevelCreator
         public float LVP_zoom = 0.5f;
         private int LVP_x_shift = 0;
         private int LVP_y_shift = 0;
-        private void LayerOverviewPanel_Paint(object sender, PaintEventArgs e)
+        private void LayerViewPanel_Paint(object sender, PaintEventArgs e)
         {
             // Creating a Graphics Object when the "Paint" thing in the Form is called
             Graphics g = e.Graphics;
@@ -288,7 +299,7 @@ namespace BM64_LevelCreator
             // Drawing a Custom Border
             draw_boundary_box(g, LayerViewPanel.ClientSize.Width, LayerViewPanel.ClientSize.Height);
         }
-        private void LayerOverviewPanel_MouseClick(object sender, MouseEventArgs e)
+        private void LayerViewPanel_MouseClick(object sender, MouseEventArgs e)
         {
             // cutting off the offsets
             int relative_x = (e.X - LVP_initial_offset) - (int)(LVP_section_display_DIM * LVP_zoom * LVP_x_shift);
@@ -307,8 +318,8 @@ namespace BM64_LevelCreator
             this.selected_section_y = select_y;
 
             System.Console.WriteLine("Selected Section ({0}|{1})", selected_section_x, selected_section_y);
-            textBox1.Text = String.Format("( {0} | {1} )", selected_section_x, selected_section_y);
-            textBox1.Update();
+            SectionCoords_TextBox.Text = String.Format("( {0} | {1} )", selected_section_x, selected_section_y);
+            SectionCoords_TextBox.Update();
 
             SectionViewPanel.Refresh();
             LayerViewPanel.Refresh();
@@ -324,7 +335,7 @@ namespace BM64_LevelCreator
 
         }
 
-        private void LayerOverviewPanel_Scroll(object sender, ScrollEventArgs e)
+        private void LayerViewPanel_Scroll(object sender, ScrollEventArgs e)
         {
             // doesnt trigger ?
         }
@@ -334,12 +345,12 @@ namespace BM64_LevelCreator
 
         }
 
-        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        private void LayerID_NumUpDown_ValueChanged(object sender, EventArgs e)
         {
             // update the selected layer correctly
-            if (numericUpDown1.Value < 0) numericUpDown1.Value = 0;
-            if (numericUpDown1.Value >= current_map.layer_cnt) numericUpDown1.Value = (current_map.layer_cnt - 1);
-            selected_layer = (int)numericUpDown1.Value;
+            if (LayerID_NumUpDown.Value < 0) LayerID_NumUpDown.Value = 0;
+            if (LayerID_NumUpDown.Value >= current_map.layer_cnt) LayerID_NumUpDown.Value = (current_map.layer_cnt - 1);
+            selected_layer = (int)LayerID_NumUpDown.Value;
 
             // in case the new layer has a diff x/y_extent, we need this extra check (Test Map 1 does that)
             if (this.selected_section_x >= current_map.layers[selected_layer].x_extent)
@@ -351,29 +362,29 @@ namespace BM64_LevelCreator
             RefreshVisuals();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void SaveMapFile_Button_Click(object sender, EventArgs e)
         {
             this.MVP_x_shift++;
             MapViewPanel.Refresh();
         }
-        private void button2_Click(object sender, EventArgs e)
+        private void RipFiles_Button_Click(object sender, EventArgs e)
         {
             this.MVP_x_shift--;
             MapViewPanel.Refresh();
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void MapView_DPad_PicBox_Click(object sender, EventArgs e)
         {
         }
 
-        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        private void MapView_DPad_PicBox_MouseClick(object sender, MouseEventArgs e)
         {
             // translate click coordinates into polar coordinates around the img center
-            float translated_x = e.X - (pictureBox1.Width / 2);
-            float translated_y = e.Y - (pictureBox1.Height / 2);
+            float translated_x = e.X - (MapView_DPad_PicBox.Width / 2);
+            float translated_y = e.Y - (MapView_DPad_PicBox.Height / 2);
             double radius = Math.Sqrt((translated_x * translated_x) + (translated_y * translated_y));
             // lil radius check to exclude the corners a bit
-            if (radius > pictureBox1.Width / 2) return;
+            if (radius > MapView_DPad_PicBox.Width / 2) return;
             double angle = Math.Acos(translated_x / radius) * Math.Sign(-translated_y);
             if (angle < 0.0) angle = 2.0 * Math.PI + angle;
 
@@ -388,18 +399,18 @@ namespace BM64_LevelCreator
             MapViewPanel.Refresh();
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private void LayerView_DPad_PicBox_Click(object sender, EventArgs e)
         {
         }
 
-        private void pictureBox2_MouseClick(object sender, MouseEventArgs e)
+        private void LayerView_DPad_PicBox_MouseClick(object sender, MouseEventArgs e)
         {
             // translate click coordinates into polar coordinates around the img center
-            float translated_x = e.X - (pictureBox2.Width / 2);
-            float translated_y = e.Y - (pictureBox2.Height / 2);
+            float translated_x = e.X - (LayerView_DPad_PicBox.Width / 2);
+            float translated_y = e.Y - (LayerView_DPad_PicBox.Height / 2);
             double radius = Math.Sqrt((translated_x * translated_x) + (translated_y * translated_y));
             // lil radius check to exclude the corners a bit
-            if (radius > pictureBox2.Width / 2) return;
+            if (radius > LayerView_DPad_PicBox.Width / 2) return;
             double angle = Math.Acos(translated_x / radius) * Math.Sign(-translated_y);
             if (angle < 0.0) angle = 2.0 * Math.PI + angle;
 
@@ -412,17 +423,17 @@ namespace BM64_LevelCreator
             // and update the panel
             LayerViewPanel.Refresh();
         }
-        private void pictureBox3_MouseClick(object sender, MouseEventArgs e)
+        private void LayerView_Zoom_PicBox_MouseClick(object sender, MouseEventArgs e)
         {
             float old_zoom_lvl = LVP_zoom;
             float zoom_change = 1.5f;
-            if (e.X < (pictureBox3.Width / 2)) // zoomin in
+            if (e.X < (LayerView_Zoom_PicBox.Width / 2)) // zoomin in
             {
                 LVP_zoom *= zoom_change;
                 LVP_x_shift = (int)(LVP_x_shift * zoom_change);
                 LVP_y_shift = (int)(LVP_y_shift * zoom_change);
             }
-            if (e.X > (pictureBox3.Width / 2)) // zoomin out
+            if (e.X > (LayerView_Zoom_PicBox.Width / 2)) // zoomin out
             {
                 LVP_zoom /= zoom_change;
                 LVP_x_shift = (int)(LVP_x_shift / zoom_change);
@@ -431,7 +442,7 @@ namespace BM64_LevelCreator
             LayerViewPanel.Refresh();
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void SectionCoords_TextBox_TextChanged(object sender, EventArgs e)
         {
 
         }
@@ -450,47 +461,47 @@ namespace BM64_LevelCreator
             this.selected_tile.nibbles[0] = (byte) content;
             TileInfoPanel.Refresh();
         }
-        private void textBox3_TextChanged(object sender, EventArgs e)
+        private void EnemyID_TextBox_TextChanged(object sender, EventArgs e)
         {
-            int content = Convert.ToInt16(textBox3.Text, 16);
+            int content = Convert.ToInt16(EnemyID_TextBox.Text, 16);
             if (content < 0x0) content = 0x0;
             if (content > 0x6) content = 0x6; // there can only be 6 diff enemies !
-            this.textBox3.Text = String.Format("{0:X}", content);
+            this.EnemyID_TextBox.Text = String.Format("{0:X}", content);
             this.selected_tile.nibbles[1] = (byte)content;
             TileInfoPanel.Refresh();
         }
-        private void textBox4_TextChanged(object sender, EventArgs e)
+        private void ObjectID_TextBox_TextChanged(object sender, EventArgs e)
         {
-            int content = Convert.ToInt16(textBox4.Text, 16);
+            int content = Convert.ToInt16(ObjectID_TextBox.Text, 16);
             if (content < 0x0) content = 0x0;
             if (content > 0xF) content = 0xF;
-            this.textBox4.Text = String.Format("{0:X}", content);
+            this.ObjectID_TextBox.Text = String.Format("{0:X}", content);
             this.selected_tile.nibbles[2] = (byte)content;
             TileInfoPanel.Refresh();
         }
 
-        private void LoadFileButton_Click(object sender, EventArgs e)
+        private void LoadMapFile_Button_Click(object sender, EventArgs e)
         {
             // reset the selected layer and section or it might crash when loading a smaller map
             this.selected_layer = 0;
             this.selected_section_x = 0;
             this.selected_section_y = 0;
             // create the correct filepath (might want to check if it exists)
-            String filename = GlobalData.collision_files[this.comboBox1.Text];
+            String filename = GlobalData.collision_files[this.MapNames_ComboBox.Text];
             String filepath = GlobalData.BM64_CollisionDir + filename;
             // and load it
             current_map.load_from_File(filepath);
             RefreshVisuals();
         }
-        private void button1_Click_1(object sender, EventArgs e)
+        private void SaveMapFile_Button_Click_1(object sender, EventArgs e)
         {
             // create the correct filepath (might want to check if it exists)
-            String filename = GlobalData.collision_files[this.comboBox1.Text];
+            String filename = GlobalData.collision_files[this.MapNames_ComboBox.Text];
             String filepath = GlobalData.BM64_CollisionDir + filename;
             // and save it
             current_map.write_to_File(filepath);
         }
-        private void button2_Click_1(object sender, EventArgs e)
+        private void RipFiles_Button_Click_1(object sender, EventArgs e)
         {
             OpenFileDialog OFD = new OpenFileDialog();
             OFD.InitialDirectory = "../../";
@@ -501,7 +512,7 @@ namespace BM64_LevelCreator
                 System.Console.WriteLine("File-Ripping concluded");
             }
         }
-        private void button3_Click(object sender, EventArgs e)
+        private void BuildROM_Button_Click(object sender, EventArgs e)
         {
             //OpenFileDialog OFD = new OpenFileDialog();
             //OFD.InitialDirectory = "../../";
@@ -512,7 +523,7 @@ namespace BM64_LevelCreator
                 System.Console.WriteLine("ROM-building concluded");
             }
         }
-        private void button4_Click(object sender, EventArgs e)
+        private void Export2OBJ_Button_Click(object sender, EventArgs e)
         {
             SaveFileDialog SFD = new SaveFileDialog();
             SFD.InitialDirectory = "../../";
@@ -574,7 +585,17 @@ namespace BM64_LevelCreator
             }
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void MapNames_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void splitter1_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
         {
 
         }
