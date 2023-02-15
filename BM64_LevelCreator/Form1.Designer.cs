@@ -45,6 +45,8 @@ namespace BM64_LevelCreator
             this.LoadMapFile_Button = new System.Windows.Forms.Button();
             this.SectionViewPanel = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.TextureSelectPanel = new System.Windows.Forms.Panel();
+            this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.TileSelectPanel = new System.Windows.Forms.Panel();
             this.TileInfoPanel = new System.Windows.Forms.Panel();
@@ -63,14 +65,14 @@ namespace BM64_LevelCreator
             this.MapNames_ComboBox = new System.Windows.Forms.ComboBox();
             this.RipFiles_Button = new System.Windows.Forms.Button();
             this.SaveMapFile_Button = new System.Windows.Forms.Button();
-            this.label12 = new System.Windows.Forms.Label();
-            this.TextureSelectPanel = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LayerView_Zoom_PicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MapView_DPad_PicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LayerID_NumUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LayerView_DPad_PicBox)).BeginInit();
             this.panel4.SuspendLayout();
+            this.TextureSelectPanel.SuspendLayout();
             this.TileInfoPanel.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -271,6 +273,28 @@ namespace BM64_LevelCreator
             this.panel4.Size = new System.Drawing.Size(430, 485);
             this.panel4.TabIndex = 3;
             // 
+            // TextureSelectPanel
+            // 
+            this.TextureSelectPanel.BackColor = System.Drawing.Color.Gray;
+            this.TextureSelectPanel.Controls.Add(this.button1);
+            this.TextureSelectPanel.Location = new System.Drawing.Point(276, 318);
+            this.TextureSelectPanel.Name = "TextureSelectPanel";
+            this.TextureSelectPanel.Size = new System.Drawing.Size(64, 143);
+            this.TextureSelectPanel.TabIndex = 4;
+            this.TextureSelectPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.TextureSelectPanel_Paint);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label12.Location = new System.Drawing.Point(273, 297);
+            this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(56, 17);
+            this.label12.TabIndex = 5;
+            this.label12.Text = "Texture";
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -466,26 +490,15 @@ namespace BM64_LevelCreator
             this.SaveMapFile_Button.UseVisualStyleBackColor = true;
             this.SaveMapFile_Button.Click += new System.EventHandler(this.SaveMapFile_Button_Click_1);
             // 
-            // label12
+            // button1
             // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label12.Location = new System.Drawing.Point(273, 297);
-            this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(56, 17);
-            this.label12.TabIndex = 5;
-            this.label12.Text = "Texture";
-            // 
-            // TextureSelectPanel
-            // 
-            this.TextureSelectPanel.BackColor = System.Drawing.Color.Gray;
-            this.TextureSelectPanel.Location = new System.Drawing.Point(276, 318);
-            this.TextureSelectPanel.Name = "TextureSelectPanel";
-            this.TextureSelectPanel.Size = new System.Drawing.Size(64, 143);
-            this.TextureSelectPanel.TabIndex = 4;
-            this.TextureSelectPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.TextureSelectPanel_Paint);
+            this.button1.Location = new System.Drawing.Point(3, 68);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(58, 23);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "Change";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
@@ -508,11 +521,13 @@ namespace BM64_LevelCreator
             ((System.ComponentModel.ISupportInitialize)(this.LayerView_DPad_PicBox)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            this.TextureSelectPanel.ResumeLayout(false);
             this.TileInfoPanel.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
 
         #endregion
@@ -553,6 +568,7 @@ namespace BM64_LevelCreator
         private System.Windows.Forms.Button Export2OBJ_Button;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Panel TextureSelectPanel;
+        private System.Windows.Forms.Button button1;
     }
 }
 

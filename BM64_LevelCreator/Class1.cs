@@ -15,6 +15,7 @@ namespace BM64_LevelCreator
         public static List<Image> std_images = new List<Image>();
         public static List<Image> obj_images = new List<Image>();
         public static List<string> tex_image_paths = new List<string>();
+        public static List<Image> tex_images = new List<Image>();
 
         public byte[] nibbles = new byte[4];
 
@@ -75,22 +76,117 @@ namespace BM64_LevelCreator
 
             obj_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Object.png"), imgSize));
 
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/Air.png");
             tex_image_paths.Add("BM64_LevelCreator/assets/images/Floor.png");
             tex_image_paths.Add("BM64_LevelCreator/assets/images/Warp.png");
             tex_image_paths.Add("BM64_LevelCreator/assets/images/RampD.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/RampU.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/RampR.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/RampL.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/WallCorner_UL.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/WallCorner_DL.png");
             tex_image_paths.Add("BM64_LevelCreator/assets/images/KillZone.png");
             tex_image_paths.Add("BM64_LevelCreator/assets/images/Effect_1.png");
             tex_image_paths.Add("BM64_LevelCreator/assets/images/Effect_2.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/WallCorner_UR.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/WallCorner_DR.png");
             tex_image_paths.Add("BM64_LevelCreator/assets/images/UNK_0xE.png");
             tex_image_paths.Add("BM64_LevelCreator/assets/images/Wall.png");
+            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[0]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[1]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[2]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[3]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[4]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[5]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[6]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[7]), imgSize));
+        }
+
+        public static void change_texture(int ID, string new_path)
+        {
+            Size imgSize = new Size(Tile.DIM, Tile.DIM);
+            Tile.tex_image_paths[ID] = new_path;
+            System.Console.WriteLine("Trying to change TexPath to... " + new_path);
+            Tile.tex_images[ID] = new Bitmap(Bitmap.FromFile(new_path), imgSize);
+        }
+        public static void read_tex_config_file()
+        {
+            System.Console.WriteLine("Reading TexConfig-FILE...");
+
+            string TexConfig_filename = "../../../USER_TEX.conf";
+            if (System.IO.File.Exists(TexConfig_filename) == false) return;
+
+            int count = 0;
+            foreach (string line in System.IO.File.ReadLines(TexConfig_filename))
+            {
+                // ignore the comments that explain what's what
+                if (line[0] == '#') continue;
+                // for the "default" ones we literally use the default TEX
+                if (line.Equals("default"))
+                {
+                    count++;
+                    continue;
+                }
+                Tile.change_texture(count++, line);
+            }
+            System.Console.WriteLine("Done.");
+        }
+        public static void dump_tex_config_file()
+        {
+            System.Console.WriteLine("Dumping TexConfig-FILE...");
+            string TexConfig_filename = "../../../USER_TEX.conf";
+            System.IO.StreamWriter CONF_file = new System.IO.StreamWriter(System.IO.File.Open(TexConfig_filename, System.IO.FileMode.Create));
+            CONF_file.Flush();
+
+            String[] tex_identifiers =
+            {
+                "# Floor",
+                "# Warp",
+                "# Ramps",
+                "# KillZone",
+                "# Effect_1",
+                "# Effect_2",
+                "# UNK_0xE",
+                "# Wall",
+            };
+
+            CONF_file.WriteLine("# This is the user defined TexConfig File (Don't push this up I guess)");
+            for (int count = 0; count < 8; count++)
+            {
+                // write the tex identifier string first
+                CONF_file.WriteLine(tex_identifiers[count]);
+                // then figure out if we should write "default" or an actual path"
+                if (Tile.tex_image_paths[count].Substring(0, 4).Equals("BM64"))
+                    CONF_file.WriteLine("default");
+                else
+                    CONF_file.WriteLine(Tile.tex_image_paths[count]);
+            }
+            CONF_file.Close();
+            System.Console.WriteLine("Done.");
+        }
+
+        public static int get_tex_ID_from_coll_ID(int ID)
+        {
+            switch (ID)
+            {
+                case (0x1): // Floor
+                    return 0;
+                case (0x2): // Warp
+                    return 1;
+                case (0x3): // RampD
+                case (0x4): // RampU
+                case (0x5): // RampR
+                case (0x6): // RampL
+                    return 2;
+                case (0x9): // KillZone
+                    return 3;
+                case (0xA): // Effect_1
+                    return 4;
+                case (0xB): // Effect_2
+                    return 5;
+                case (0xE): // UNK_0xE
+                    return 6;
+                case (0x7): // WallC-UL
+                case (0x8): // WallC-UR
+                case (0xC): // WallC-DL
+                case (0xD): // WallC-DR
+                case (0xF): // Wall
+                    return 7;
+                default:
+                    return -1; // basically just so C# shuts up
+            }
         }
 
         public int concat_nibbles()
@@ -571,7 +667,7 @@ namespace BM64_LevelCreator
                 MTL_file.WriteLine("illum 2"); // Illumination Mode (2 is "Highlight on")
                 MTL_file.WriteLine("Ns 96.078431"); // Specular Exponent for Specular Highlights (Copied val from Blender...)
                 MTL_file.WriteLine("Ni 1.000000"); // Optical Density (1.00 = No Effect)
-                MTL_file.WriteLine(String.Format("map_Kd {0}", Tile.tex_image_paths[i]));
+                MTL_file.WriteLine(String.Format("map_Kd {0}", Tile.tex_image_paths[Tile.get_tex_ID_from_coll_ID(i)]));
             }
             // and dont FORGET TO CLOSE IT
             MTL_file.Close();

@@ -100,7 +100,7 @@ namespace BM64_LevelCreator
             // and load it
             current_map.load_from_File(filepath);
 
-            Tile.tex_image_paths[0x1] = "BM64_LevelCreator/assets/textures/Floor.png";
+            Tile.read_tex_config_file();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -192,7 +192,12 @@ namespace BM64_LevelCreator
 
             Rectangle loc = new Rectangle(0, 0, (2 * Tile.DIM), (2 * Tile.DIM));
 
-            g.DrawImage(Tile.std_images[selected_tile.get_coll_ID()], loc);
+            int coll_ID = selected_tile.get_coll_ID();
+            if (coll_ID != 0x0)
+            {
+                int tex_ID = Tile.get_tex_ID_from_coll_ID(coll_ID);
+                g.DrawImage(Tile.tex_images[tex_ID], loc);
+            }
         }
 
         private void TileInfoPanel_Paint(object sender, PaintEventArgs e)
@@ -467,6 +472,24 @@ namespace BM64_LevelCreator
             {
                 RipFiles(OFD.FileName);
                 System.Console.WriteLine("File-Ripping concluded");
+            }
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int coll_ID = selected_tile.get_coll_ID();
+            if (coll_ID != 0x0)
+            {
+                OpenFileDialog OFD = new OpenFileDialog();
+                OFD.InitialDirectory = "../../assets/textures/";
+                OFD.Filter = "*.png|*.png";
+                if (OFD.ShowDialog() == DialogResult.OK)
+                {
+                    int tex_ID = Tile.get_tex_ID_from_coll_ID(coll_ID);
+                    Tile.change_texture(tex_ID, OFD.FileName);
+                    System.Console.WriteLine("Changed Texture");
+                }
+                TextureSelectPanel.Refresh();
+                Tile.dump_tex_config_file();
             }
         }
         private void BuildROM_Button_Click(object sender, EventArgs e)
