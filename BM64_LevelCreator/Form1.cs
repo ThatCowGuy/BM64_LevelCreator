@@ -87,20 +87,25 @@ namespace BM64_LevelCreator
         {
             InitializeComponent();
 
-            this.MapNames_ComboBox.DataSource = new List<string>(GlobalData.collision_files.Keys);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // init the editor tile images
             Tile.init_images();
-            
-            // load the first map from the dropdown as a dummy
+
+            // init the map names dropbox
+            this.MapNames_ComboBox.DataSource = new List<string>(GlobalData.collision_files.Keys);
+            // and load the first map from it for something to draw
             String filename = GlobalData.collision_files[this.MapNames_ComboBox.Text];
             String filepath = GlobalData.BM64_CollisionDir + filename;
-            // and load it
-            current_map.load_from_File(filepath);
+            current_map.load_CollisionBIN(filepath);
 
+            // init the texture stuff
             Tile.read_tex_config_file();
+
+            // put an initial value into this Box
+            this.textBox1.Text = String.Format("{0}", current_map.layers[0].dz);
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -145,6 +150,45 @@ namespace BM64_LevelCreator
                 RefreshVisuals();
             }
             System.Console.WriteLine("Selected TileType = {0:X4}", selected_tile.concat_nibbles());
+        }
+
+        private void FillSection_Button_Click(object sender, EventArgs e)
+        {
+            fill_section_with(selected_tile);
+        }
+        private void NewMap_Button_Click(object sender, EventArgs e)
+        {
+            DialogResult res = MessageBox.Show(
+                "There is no going back !\n" + // message
+                "(unless you saved your map somewhere)",
+                "Woah there !", // top line
+                MessageBoxButtons.OKCancel);
+            if (res != DialogResult.OK) return;
+
+            // reset the selected layer and section or it might crash when loading a smaller map
+            current_map.reset_map();
+            change_selected_layer(0);
+            RefreshVisuals();
+        }
+        public void fill_section_with(Tile t)
+        {
+            // translating the results
+            int sel_section_index = (current_map.layers[selected_layer].x_extent * selected_section_y) + selected_section_x;
+
+            for (int x = 0; x < Section.DIM; x++)
+            {
+                for (int y = 0; y < Section.DIM; y++)
+                {
+                    current_map.layers[selected_layer].sections[sel_section_index].tiles[x, y] = t.clone();
+                }
+            }
+            current_map.layers[selected_layer].sections[sel_section_index].create_representation();
+            RefreshVisuals();
+        }
+
+
+        private void SectionViewPanel_MouseHover(object sender, EventArgs e)
+        {
         }
         private void TileSelectPanel_MouseClick(object sender, MouseEventArgs e)
         {
@@ -262,6 +306,22 @@ namespace BM64_LevelCreator
             // Drawing a Custom Border
             draw_boundary_box(g, MapViewPanel.ClientSize.Width, MapViewPanel.ClientSize.Height);
         }
+        public void change_selected_layer(int index)
+        {
+            this.selected_layer = index;
+            // in case the new layer has a diff x/y_extent, we need this extra check (Test Map 1 does that)
+            if (this.selected_section_x >= current_map.layers[selected_layer].x_extent)
+                this.selected_section_x = current_map.layers[selected_layer].x_extent - 1;
+            if (this.selected_section_y >= current_map.layers[selected_layer].y_extent)
+                this.selected_section_y = current_map.layers[selected_layer].y_extent - 1;
+            // update all the components that care about this value
+            LayerID_NumUpDown.Value = index;
+            LayerID_NumUpDown.Refresh();
+            textBox1.Text = String.Format("{0}", current_map.layers[index].dz);
+            textBox1.Refresh();
+
+            RefreshVisuals();
+        }
         private void LayerViewPanel_Paint(object sender, PaintEventArgs e)
         {
             // Creating a Graphics Object when the "Paint" thing in the Form is called
@@ -330,16 +390,7 @@ namespace BM64_LevelCreator
             // update the selected layer correctly
             if (LayerID_NumUpDown.Value < 0) LayerID_NumUpDown.Value = 0;
             if (LayerID_NumUpDown.Value >= current_map.layer_cnt) LayerID_NumUpDown.Value = (current_map.layer_cnt - 1);
-            selected_layer = (int)LayerID_NumUpDown.Value;
-
-            // in case the new layer has a diff x/y_extent, we need this extra check (Test Map 1 does that)
-            if (this.selected_section_x >= current_map.layers[selected_layer].x_extent)
-                this.selected_section_x = current_map.layers[selected_layer].x_extent - 1;
-            if (this.selected_section_y >= current_map.layers[selected_layer].y_extent)
-                this.selected_section_y = current_map.layers[selected_layer].y_extent - 1;
-
-            // and redraw shit
-            RefreshVisuals();
+            change_selected_layer((int)LayerID_NumUpDown.Value);
         }
 
         private void SaveMapFile_Button_Click(object sender, EventArgs e)
@@ -387,10 +438,10 @@ namespace BM64_LevelCreator
             if (angle < 0.0) angle = 2.0 * Math.PI + angle;
 
             // translate the angle coordinate into a direction to move the viewport
-            if ((angle > (1.0 / 4.0) * Math.PI) && (angle < (3.0 / 4.0) * Math.PI)) this.LVP_y_shift++;
-            else if ((angle > (3.0 / 4.0) * Math.PI) && (angle < (5.0 / 4.0) * Math.PI)) this.LVP_x_shift++;
-            else if ((angle > (5.0 / 4.0) * Math.PI) && (angle < (7.0 / 4.0) * Math.PI)) this.LVP_y_shift--;
-            else this.LVP_x_shift--;
+            if ((angle > (1.0 / 4.0) * Math.PI) && (angle < (3.0 / 4.0) * Math.PI)) this.LVP_y_shift--;
+            else if ((angle > (3.0 / 4.0) * Math.PI) && (angle < (5.0 / 4.0) * Math.PI)) this.LVP_x_shift--;
+            else if ((angle > (5.0 / 4.0) * Math.PI) && (angle < (7.0 / 4.0) * Math.PI)) this.LVP_y_shift++;
+            else this.LVP_x_shift++;
 
             // and update the panel
             LayerViewPanel.Refresh();
@@ -442,18 +493,34 @@ namespace BM64_LevelCreator
             TileInfoPanel.Refresh();
         }
 
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            int old_dz = this.current_map.layers[selected_layer].dz;
+            int new_dz = Convert.ToInt32(textBox1.Text, 10);
+            this.current_map.layers[selected_layer].dz = new_dz;
+
+            // the change in dz = ddz
+            int ddz = (new_dz - old_dz);
+
+            // adjust the hight of every layer ABOVE the affected one
+            for (int i = (selected_layer + 1); i < this.current_map.layer_cnt; i++)
+            {
+                this.current_map.layers[i].z += ddz;
+            }
+            // adjust the total map hight
+            this.current_map.hight += ddz;
+
+            MapViewPanel.Refresh();
+        }
+
         private void LoadMapFile_Button_Click(object sender, EventArgs e)
         {
-            // reset the selected layer and section or it might crash when loading a smaller map
-            this.selected_layer = 0;
-            this.selected_section_x = 0;
-            this.selected_section_y = 0;
             // create the correct filepath (might want to check if it exists)
             String filename = GlobalData.collision_files[this.MapNames_ComboBox.Text];
             String filepath = GlobalData.BM64_CollisionDir + filename;
             // and load it
-            current_map.load_from_File(filepath);
-            RefreshVisuals();
+            current_map.load_CollisionBIN(filepath);
+            change_selected_layer(0);
         }
         private void SaveMapFile_Button_Click_1(object sender, EventArgs e)
         {
@@ -461,7 +528,7 @@ namespace BM64_LevelCreator
             String filename = GlobalData.collision_files[this.MapNames_ComboBox.Text];
             String filepath = GlobalData.BM64_CollisionDir + filename;
             // and save it
-            current_map.write_to_File(filepath);
+            current_map.dump_CollisionBIN(filepath);
         }
         private void RipFiles_Button_Click_1(object sender, EventArgs e)
         {
@@ -510,9 +577,14 @@ namespace BM64_LevelCreator
             SFD.Filter = "*.obj|*.obj";
             if (SFD.ShowDialog() == DialogResult.OK)
             {
-                current_map.dump_as_obj(SFD.FileName);
+                current_map.dump_OBJ(SFD.FileName);
                 System.Console.WriteLine("File sucessfully exportet to .OBJ");
             }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            current_map.dump_ASM();
         }
 
         private void RipFiles(string RomPath)
@@ -563,6 +635,35 @@ namespace BM64_LevelCreator
             {
                 Console.WriteLine("Couldn't rip files!");
             }
+
+            // and finally, some padding to get to 8.192 KB filesize
+            System.IO.FileStream rom_file = File.Open("../../../Modified_BM64.z64", FileMode.Append);
+            while (rom_file.Length < GlobalData.ROM_SIZE)
+                rom_file.WriteByte(0xFF);
+            rom_file.Close();
+        }
+
+        private void ExpandX_Button_Click(object sender, EventArgs e)
+        {
+            this.current_map.layers[selected_layer].expand_x_once();
+            RefreshVisuals();
+        }
+
+        private void ExpandY_Button_Click(object sender, EventArgs e)
+        {
+            this.current_map.layers[selected_layer].expand_y_once();
+            RefreshVisuals();
+        }
+
+        private void LayerView_DPad_PicBox_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            current_map.add_layer(1);
+            change_selected_layer(current_map.layer_cnt - 1);
         }
     }
 }

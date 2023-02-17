@@ -15,6 +15,10 @@ namespace BM64_LevelCreator
         public static int TILE_MEMSIZE = 0x2;
         public static int SECTION_MEMSIZE = SECTION_HEADSIZE + (Section.DIM * Section.DIM) * TILE_MEMSIZE;
 
+        public static int ROM_SIZE = 8388608; // 8.128 KB
+
+        public static int LAST_LAYER_VISUAL_HIGHT = 10;
+
         // DO NOT CHANGE - this bad boy is just a path to the ripper, I'm sure there's a better way of doing it but I like this way :)
         // Note: System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) == "./"
         public static readonly string RipperPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "deps\\bm64romtool.exe");

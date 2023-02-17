@@ -45,7 +45,10 @@ namespace BM64_LevelCreator
             this.LoadMapFile_Button = new System.Windows.Forms.Button();
             this.SectionViewPanel = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.NewMap_Button = new System.Windows.Forms.Button();
+            this.FillSection_Button = new System.Windows.Forms.Button();
             this.TextureSelectPanel = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.TileSelectPanel = new System.Windows.Forms.Panel();
@@ -65,7 +68,12 @@ namespace BM64_LevelCreator
             this.MapNames_ComboBox = new System.Windows.Forms.ComboBox();
             this.RipFiles_Button = new System.Windows.Forms.Button();
             this.SaveMapFile_Button = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.ExpandX_Button = new System.Windows.Forms.Button();
+            this.ExpandY_Button = new System.Windows.Forms.Button();
+            this.label13 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LayerView_Zoom_PicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MapView_DPad_PicBox)).BeginInit();
@@ -90,6 +98,11 @@ namespace BM64_LevelCreator
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.button2);
+            this.panel2.Controls.Add(this.textBox1);
+            this.panel2.Controls.Add(this.label13);
+            this.panel2.Controls.Add(this.ExpandY_Button);
+            this.panel2.Controls.Add(this.ExpandX_Button);
             this.panel2.Controls.Add(this.LayerView_Zoom_PicBox);
             this.panel2.Controls.Add(this.MapView_DPad_PicBox);
             this.panel2.Controls.Add(this.label7);
@@ -105,13 +118,13 @@ namespace BM64_LevelCreator
             this.panel2.Location = new System.Drawing.Point(463, 56);
             this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(357, 485);
+            this.panel2.Size = new System.Drawing.Size(359, 485);
             this.panel2.TabIndex = 1;
             // 
             // LayerView_Zoom_PicBox
             // 
             this.LayerView_Zoom_PicBox.Image = global::BM64_LevelCreator.Properties.Resources.Zoom;
-            this.LayerView_Zoom_PicBox.Location = new System.Drawing.Point(279, 411);
+            this.LayerView_Zoom_PicBox.Location = new System.Drawing.Point(282, 366);
             this.LayerView_Zoom_PicBox.Margin = new System.Windows.Forms.Padding(2);
             this.LayerView_Zoom_PicBox.Name = "LayerView_Zoom_PicBox";
             this.LayerView_Zoom_PicBox.Size = new System.Drawing.Size(50, 25);
@@ -123,7 +136,7 @@ namespace BM64_LevelCreator
             // MapView_DPad_PicBox
             // 
             this.MapView_DPad_PicBox.Image = global::BM64_LevelCreator.Properties.Resources.DPad;
-            this.MapView_DPad_PicBox.Location = new System.Drawing.Point(278, 89);
+            this.MapView_DPad_PicBox.Location = new System.Drawing.Point(282, 167);
             this.MapView_DPad_PicBox.Margin = new System.Windows.Forms.Padding(2);
             this.MapView_DPad_PicBox.Name = "MapView_DPad_PicBox";
             this.MapView_DPad_PicBox.Size = new System.Drawing.Size(61, 61);
@@ -137,7 +150,7 @@ namespace BM64_LevelCreator
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label7.Location = new System.Drawing.Point(276, 392);
+            this.label7.Location = new System.Drawing.Point(279, 347);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(44, 17);
@@ -149,7 +162,7 @@ namespace BM64_LevelCreator
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label5.Location = new System.Drawing.Point(275, 37);
+            this.label5.Location = new System.Drawing.Point(279, 9);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(44, 17);
@@ -160,7 +173,7 @@ namespace BM64_LevelCreator
             // 
             this.SectionCoords_TextBox.BackColor = System.Drawing.Color.White;
             this.SectionCoords_TextBox.Enabled = false;
-            this.SectionCoords_TextBox.Location = new System.Drawing.Point(278, 286);
+            this.SectionCoords_TextBox.Location = new System.Drawing.Point(124, 463);
             this.SectionCoords_TextBox.Margin = new System.Windows.Forms.Padding(2);
             this.SectionCoords_TextBox.Name = "SectionCoords_TextBox";
             this.SectionCoords_TextBox.Size = new System.Drawing.Size(62, 20);
@@ -169,7 +182,7 @@ namespace BM64_LevelCreator
             // 
             // LayerID_NumUpDown
             // 
-            this.LayerID_NumUpDown.Location = new System.Drawing.Point(278, 56);
+            this.LayerID_NumUpDown.Location = new System.Drawing.Point(282, 28);
             this.LayerID_NumUpDown.Margin = new System.Windows.Forms.Padding(2);
             this.LayerID_NumUpDown.Name = "LayerID_NumUpDown";
             this.LayerID_NumUpDown.Size = new System.Drawing.Size(61, 20);
@@ -181,12 +194,12 @@ namespace BM64_LevelCreator
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label6.Location = new System.Drawing.Point(274, 267);
+            this.label6.Location = new System.Drawing.Point(6, 464);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(55, 17);
+            this.label6.Size = new System.Drawing.Size(114, 17);
             this.label6.TabIndex = 8;
-            this.label6.Text = "Section";
+            this.label6.Text = "Selected Section";
             // 
             // label1
             // 
@@ -196,20 +209,21 @@ namespace BM64_LevelCreator
             this.label1.Location = new System.Drawing.Point(9, 9);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(94, 17);
+            this.label1.Size = new System.Drawing.Size(68, 17);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Full Map View";
+            this.label1.Text = "Map View";
             // 
             // LayerView_DPad_PicBox
             // 
             this.LayerView_DPad_PicBox.Image = global::BM64_LevelCreator.Properties.Resources.DPad;
-            this.LayerView_DPad_PicBox.Location = new System.Drawing.Point(279, 316);
+            this.LayerView_DPad_PicBox.Location = new System.Drawing.Point(282, 400);
             this.LayerView_DPad_PicBox.Margin = new System.Windows.Forms.Padding(2);
             this.LayerView_DPad_PicBox.Name = "LayerView_DPad_PicBox";
             this.LayerView_DPad_PicBox.Size = new System.Drawing.Size(61, 61);
             this.LayerView_DPad_PicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LayerView_DPad_PicBox.TabIndex = 8;
             this.LayerView_DPad_PicBox.TabStop = false;
+            this.LayerView_DPad_PicBox.Click += new System.EventHandler(this.LayerView_DPad_PicBox_Click);
             this.LayerView_DPad_PicBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LayerView_DPad_PicBox_MouseClick);
             // 
             // label3
@@ -220,9 +234,9 @@ namespace BM64_LevelCreator
             this.label3.Location = new System.Drawing.Point(9, 242);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(103, 17);
+            this.label3.Size = new System.Drawing.Size(77, 17);
             this.label3.TabIndex = 1;
-            this.label3.Text = "Selected Layer";
+            this.label3.Text = "Layer View";
             // 
             // LayerViewPanel
             // 
@@ -256,9 +270,12 @@ namespace BM64_LevelCreator
             this.SectionViewPanel.TabIndex = 2;
             this.SectionViewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.SectionViewPanel_Paint);
             this.SectionViewPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SectionViewPanel_MouseClick);
+            this.SectionViewPanel.MouseHover += new System.EventHandler(this.SectionViewPanel_MouseHover);
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.NewMap_Button);
+            this.panel4.Controls.Add(this.FillSection_Button);
             this.panel4.Controls.Add(this.TextureSelectPanel);
             this.panel4.Controls.Add(this.label12);
             this.panel4.Controls.Add(this.label11);
@@ -273,6 +290,26 @@ namespace BM64_LevelCreator
             this.panel4.Size = new System.Drawing.Size(430, 485);
             this.panel4.TabIndex = 3;
             // 
+            // NewMap_Button
+            // 
+            this.NewMap_Button.Location = new System.Drawing.Point(349, 75);
+            this.NewMap_Button.Name = "NewMap_Button";
+            this.NewMap_Button.Size = new System.Drawing.Size(70, 23);
+            this.NewMap_Button.TabIndex = 10;
+            this.NewMap_Button.Text = "New Map";
+            this.NewMap_Button.UseVisualStyleBackColor = true;
+            this.NewMap_Button.Click += new System.EventHandler(this.NewMap_Button_Click);
+            // 
+            // FillSection_Button
+            // 
+            this.FillSection_Button.Location = new System.Drawing.Point(349, 37);
+            this.FillSection_Button.Name = "FillSection_Button";
+            this.FillSection_Button.Size = new System.Drawing.Size(70, 23);
+            this.FillSection_Button.TabIndex = 9;
+            this.FillSection_Button.Text = "Fill Section";
+            this.FillSection_Button.UseVisualStyleBackColor = true;
+            this.FillSection_Button.Click += new System.EventHandler(this.FillSection_Button_Click);
+            // 
             // TextureSelectPanel
             // 
             this.TextureSelectPanel.BackColor = System.Drawing.Color.Gray;
@@ -282,6 +319,16 @@ namespace BM64_LevelCreator
             this.TextureSelectPanel.Size = new System.Drawing.Size(64, 143);
             this.TextureSelectPanel.TabIndex = 4;
             this.TextureSelectPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.TextureSelectPanel_Paint);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(3, 68);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(58, 23);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "Change";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label12
             // 
@@ -427,6 +474,7 @@ namespace BM64_LevelCreator
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.Export2OBJ_Button);
             this.panel1.Controls.Add(this.BuildROM_Button);
             this.panel1.Controls.Add(this.MapNames_ComboBox);
@@ -435,7 +483,7 @@ namespace BM64_LevelCreator
             this.panel1.Controls.Add(this.LoadMapFile_Button);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(687, 39);
+            this.panel1.Size = new System.Drawing.Size(741, 39);
             this.panel1.TabIndex = 6;
             // 
             // Export2OBJ_Button
@@ -490,22 +538,74 @@ namespace BM64_LevelCreator
             this.SaveMapFile_Button.UseVisualStyleBackColor = true;
             this.SaveMapFile_Button.Click += new System.EventHandler(this.SaveMapFile_Button_Click_1);
             // 
-            // button1
+            // ExpandX_Button
             // 
-            this.button1.Location = new System.Drawing.Point(3, 68);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(58, 23);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "Change";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.ExpandX_Button.Location = new System.Drawing.Point(282, 261);
+            this.ExpandX_Button.Name = "ExpandX_Button";
+            this.ExpandX_Button.Size = new System.Drawing.Size(61, 23);
+            this.ExpandX_Button.TabIndex = 11;
+            this.ExpandX_Button.Text = "Expand X";
+            this.ExpandX_Button.UseVisualStyleBackColor = true;
+            this.ExpandX_Button.Click += new System.EventHandler(this.ExpandX_Button_Click);
+            // 
+            // ExpandY_Button
+            // 
+            this.ExpandY_Button.Location = new System.Drawing.Point(282, 290);
+            this.ExpandY_Button.Name = "ExpandY_Button";
+            this.ExpandY_Button.Size = new System.Drawing.Size(61, 23);
+            this.ExpandY_Button.TabIndex = 12;
+            this.ExpandY_Button.Text = "Expand Y";
+            this.ExpandY_Button.UseVisualStyleBackColor = true;
+            this.ExpandY_Button.Click += new System.EventHandler(this.ExpandY_Button_Click);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label13.Location = new System.Drawing.Point(279, 55);
+            this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(72, 17);
+            this.label13.TabIndex = 13;
+            this.label13.Text = "Hight (dZ)";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(282, 74);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(61, 20);
+            this.textBox1.TabIndex = 10;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(282, 105);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(61, 23);
+            this.button2.TabIndex = 14;
+            this.button2.Text = "+ Layer";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(619, 5);
+            this.button3.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(71, 24);
+            this.button3.TabIndex = 10;
+            this.button3.Text = "Export ASM";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-            this.ClientSize = new System.Drawing.Size(831, 552);
+            this.ClientSize = new System.Drawing.Size(845, 566);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel2);
@@ -569,6 +669,14 @@ namespace BM64_LevelCreator
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Panel TextureSelectPanel;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button NewMap_Button;
+        private System.Windows.Forms.Button FillSection_Button;
+        private System.Windows.Forms.Button ExpandY_Button;
+        private System.Windows.Forms.Button ExpandX_Button;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
 

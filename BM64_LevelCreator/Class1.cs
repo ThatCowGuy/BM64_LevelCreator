@@ -210,7 +210,7 @@ namespace BM64_LevelCreator
         }
     }
 
-    public class Section
+    public class Section : IComparable<Section>
     {
         // A Section consists of 8x8 Tiles and has an (x,y) coord
         public static int DIM = 8;
@@ -218,6 +218,17 @@ namespace BM64_LevelCreator
         public Tile[,] tiles;
 
         public Image rep;
+
+        public int CompareTo(Section B)
+        {
+            if (B.y < this.y) return -1;
+            if (B.y > this.y) return +1;
+            // else, their y component is equal
+            if (B.x < this.x) return -1;
+            if (B.x > this.x) return +1;
+            // else, they are the same (which honestly should never happen...)
+            return 0;
+        }
 
         // Proper Constructor needed, or the Tiles init to NULL...
         public Section(int section_x, int section_y)
@@ -233,6 +244,7 @@ namespace BM64_LevelCreator
                     this.tiles[x, y] = new Tile(0);
                 }
             }
+            this.create_representation();
         }
 
         public void create_representation()
@@ -406,6 +418,26 @@ namespace BM64_LevelCreator
         public int hight = 0;
         public List<Layer> layers = new List<Layer>();
 
+        public int collision_file_ID = 0;
+        public int model_file_ID = 0;
+
+        public void reset_map()
+        {
+            // reset properties
+            this.clear();
+            // and add 1 layer (+ create the rep for the 1 section) so we dont have a NULL map
+            this.add_layer(1);
+            this.layers[0].sections[0].create_representation();
+        }
+        public void clear()
+        {
+            this.layer_cnt = 0;
+            this.hight = 0;
+            // get rid of ALL layers
+            this.layers.Clear();
+        }
+
+
         public void calc_mem_size()
         {
             // start of with the map header size
@@ -432,13 +464,6 @@ namespace BM64_LevelCreator
             return max;
         }
 
-        public void clear()
-        {
-            this.layer_cnt = 0;
-            this.hight = 0;
-            this.layers = new List<Layer>();
-        }
-
         public Tile get_Tile_At(int layer, Point section, Point coord)
         {
             // get a hold of the correct section first
@@ -463,28 +488,28 @@ namespace BM64_LevelCreator
             {  
                 // careful, in UV Y+ is UP !!!
                 case ("WALL_C_UL"):
-                    // vtx_BL, vtx_BR, vtx_TR
-                    tri += String.Format("vt {0} {1}\n", 0, 0);
-                    tri += String.Format("vt {0} {1}\n", 1, 0);
+                    // vtx_TR, vtx_BR, vtx_BL
                     tri += String.Format("vt {0} {1}\n", 1, 1);
+                    tri += String.Format("vt {0} {1}\n", 1, 0);
+                    tri += String.Format("vt {0} {1}\n", 0, 0);
                     break;
                 case ("WALL_C_DL"):
-                    // vtx_BR, vtx_TR, vtx_TL
+                    // vtx_BR, vtx_TL, vtx_TR
                     tri += String.Format("vt {0} {1}\n", 1, 0);
-                    tri += String.Format("vt {0} {1}\n", 1, 1);
                     tri += String.Format("vt {0} {1}\n", 0, 1);
+                    tri += String.Format("vt {0} {1}\n", 1, 1);
                     break;
                 case ("WALL_C_UR"):
-                    // vtx_BR, vtx_BL, vtx_TL
+                    // vtx_TL, vtx_BR, vtx_BL
+                    tri += String.Format("vt {0} {1}\n", 0, 1);
                     tri += String.Format("vt {0} {1}\n", 1, 0);
                     tri += String.Format("vt {0} {1}\n", 0, 0);
-                    tri += String.Format("vt {0} {1}\n", 0, 1);
                     break;
                 case ("WALL_C_DR"):
-                    // vtx_TR, vtx_BL, vtx_TL
+                    // vtx_TL, vtx_TR, vtx_BL
+                    tri += String.Format("vt {0} {1}\n", 0, 1);
                     tri += String.Format("vt {0} {1}\n", 1, 1);
                     tri += String.Format("vt {0} {1}\n", 0, 0);
-                    tri += String.Format("vt {0} {1}\n", 0, 1);
                     break;
             }
             // add in the tri, built from v/vt vertices
@@ -515,12 +540,15 @@ namespace BM64_LevelCreator
             return quad;
         }
 
-        public void load_from_File(string filename)
+        public void load_CollisionBIN(string filename)
         {
             System.Console.WriteLine("Clearing currently loaded Map...");
             this.clear();
 
-            System.Console.WriteLine("Reading File...");
+            int file_index_start = filename.LastIndexOf('/') + 5;
+            this.collision_file_ID = Convert.ToInt32(filename.Substring(file_index_start, 3), 10);
+            this.model_file_ID = this.collision_file_ID - 10; // WIILD GUESS
+            System.Console.WriteLine(String.Format("Reading File... {0}", this.collision_file_ID));
             byte[] input = System.IO.File.ReadAllBytes(filename);
 
             // copy the header over
@@ -541,7 +569,6 @@ namespace BM64_LevelCreator
                 layer_offsets[i] = layer_offsets[(i - 1)] + 3 + (section_cnt * GlobalData.SECTION_MEMSIZE);
             }
             // now we can create the layers and expand them to their respective extents
-            int cur_total_height = 0;
             for (int i = 0; i < layer_cnt; i++)
             {
                 // print some debug info to console
@@ -552,6 +579,12 @@ namespace BM64_LevelCreator
                 int x_extent = input[layer_offsets[i] + 0];
                 int y_extent = input[layer_offsets[i] + 1];
                 int dz = input[layer_offsets[i] + 2];
+
+                // we really dont care about the hight of the last layer when displaying anything
+                // just make sure to set it to 0xFF on export !!
+                if (i == (layer_cnt - 1))
+                    dz = GlobalData.LAST_LAYER_VISUAL_HIGHT;
+
                 // add the layer and expand it
                 this.add_layer(dz);
                 this.layers[i].expand_x(x_extent - 1);
@@ -601,7 +634,7 @@ namespace BM64_LevelCreator
                 }
             }
         }
-        public void write_to_File(string filename)
+        public void dump_CollisionBIN(string BIN_filename)
         {
             System.Console.WriteLine("Translating Map into Output Bytes...");
             this.calc_mem_size();
@@ -622,6 +655,8 @@ namespace BM64_LevelCreator
                 output[offset + 0] = (byte) layer.x_extent;
                 output[offset + 1] = (byte) layer.y_extent;
                 output[offset + 2] = (byte) layer.dz;
+                // in case this is the last layer, overwrite the dz entry with 0xFF
+                if (layer.index == (this.layer_cnt - 1)) output[offset + 2] = 0xFF;
                 offset += GlobalData.LAYER_HEADSIZE;
                 // and iterate over all the sections
                 foreach (Section section in layer.sections)
@@ -646,13 +681,13 @@ namespace BM64_LevelCreator
             }
 
             // and finally transfer the input
-            System.IO.BinaryWriter target = new System.IO.BinaryWriter(System.IO.File.Open(filename, System.IO.FileMode.Create));
-            target.Flush();
-            target.Write(output);
-            target.Close();
-            System.Console.WriteLine("Finished Writing to {0}", filename);
+            System.IO.BinaryWriter BIN_file = new System.IO.BinaryWriter(System.IO.File.Open(BIN_filename, System.IO.FileMode.Create));
+            BIN_file.Flush();
+            BIN_file.Write(output);
+            BIN_file.Close();
+            System.Console.WriteLine("Finished Writing to {0}", BIN_filename);
         }
-        public void dump_as_mtl(string MTL_filename)
+        public void dump_MTL(string MTL_filename)
         {
             System.Console.WriteLine("Generating MTL-FILE...");
             System.IO.StreamWriter MTL_file = new System.IO.StreamWriter(System.IO.File.Open(MTL_filename, System.IO.FileMode.Create));
@@ -670,9 +705,40 @@ namespace BM64_LevelCreator
                 MTL_file.WriteLine(String.Format("map_Kd {0}", Tile.tex_image_paths[Tile.get_tex_ID_from_coll_ID(i)]));
             }
             // and dont FORGET TO CLOSE IT
+            System.Console.WriteLine("Finished Writing to {0}", MTL_filename);
             MTL_file.Close();
         }
-        public void dump_as_obj(string OBJ_filename)
+        public void dump_ASM()
+        {
+            // pop open the new ASM file (can autogen the name actually)
+            string ASM_filename = String.Format("../../../model_{0}.asm", this.model_file_ID);
+            System.Console.WriteLine("Generating ASM-FILE...");
+            System.IO.StreamWriter ASM_file = new System.IO.StreamWriter(System.IO.File.Open(ASM_filename, System.IO.FileMode.Create));
+            ASM_file.Flush();
+
+            // Read the Template ASM file and transfer it line by line, while inserting missing information
+            int line_cnt = 0;
+            foreach (string line in System.IO.File.ReadLines("../../../MinimalLevelTemplate.asm"))
+            {
+                switch (line_cnt++)
+                {
+                    case (10):
+                        ASM_file.WriteLine(String.Format("{0}#{1}", line, this.model_file_ID));
+                        break;
+                    case (11):
+                        ASM_file.WriteLine(String.Format("{0}#{1}", line, this.collision_file_ID));
+                        break;
+                    default:
+                        ASM_file.WriteLine(line);
+                        break;
+                }
+            }
+
+            // and close the ASM_file
+            ASM_file.Close();
+            System.Console.WriteLine("Finished Writing to {0}", ASM_filename);
+        }
+        public void dump_OBJ(string OBJ_filename)
         {
             System.Console.WriteLine("Translating Map into OBJ-FILE...");
             System.IO.StreamWriter OBJ_file = new System.IO.StreamWriter(System.IO.File.Open(OBJ_filename, System.IO.FileMode.Create));
@@ -680,7 +746,7 @@ namespace BM64_LevelCreator
 
             // first off, we create the MTL FILE to define the textures
             string MTL_filename = OBJ_filename.Substring(0, (OBJ_filename.Length - 4)) + ".mtl";
-            this.dump_as_mtl(MTL_filename);
+            this.dump_MTL(MTL_filename);
             // then we include the MTL FILE into our OBJ FILE
             OBJ_file.WriteLine(String.Format("mtllib {0}", MTL_filename));
             OBJ_file.WriteLine("s off"); // just always
@@ -722,14 +788,15 @@ namespace BM64_LevelCreator
                         continue;
 
                     // create a Vertex String for every possible corner of the tile
-                    String vtx_TL = String.Format("v {0} {1} {2}", (x + 0), fake_layer.z, (y + 0));
-                    String vtx_TR = String.Format("v {0} {1} {2}", (x + 1), fake_layer.z, (y + 0));
-                    String vtx_BL = String.Format("v {0} {1} {2}", (x + 0), fake_layer.z, (y + 1));
-                    String vtx_BR = String.Format("v {0} {1} {2}", (x + 1), fake_layer.z, (y + 1));
-                    String vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0), 0, (y + 0));
-                    String vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1), 0, (y + 0));
-                    String vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0), 0, (y + 1));
-                    String vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1), 0, (y + 1));
+                    // NOTE the entire model needs to be shifted by 0.5 UP AND LEFT (x-0.5, y-0.5) !!!
+                    String vtx_TL = String.Format("v {0} {1} {2}", (x + 0 - 0.5), fake_layer.z, (y + 0 - 0.5));
+                    String vtx_TR = String.Format("v {0} {1} {2}", (x + 1 - 0.5), fake_layer.z, (y + 0 - 0.5));
+                    String vtx_BL = String.Format("v {0} {1} {2}", (x + 0 - 0.5), fake_layer.z, (y + 1 - 0.5));
+                    String vtx_BR = String.Format("v {0} {1} {2}", (x + 1 - 0.5), fake_layer.z, (y + 1 - 0.5));
+                    String vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0 - 0.5), 0, (y + 0 - 0.5));
+                    String vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1 - 0.5), 0, (y + 0 - 0.5));
+                    String vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0 - 0.5), 0, (y + 1 - 0.5));
+                    String vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1 - 0.5), 0, (y + 1 - 0.5));
 
                     // Draw Wall IFF a floor or air tile is adjecent
                     if (fake_layer.check_LEFT_neighbor_for(x, y, UnobstructedTiles))
@@ -775,18 +842,16 @@ namespace BM64_LevelCreator
                     for (int x = 0; x < (Section.DIM * layer.x_extent); x++)
                     {
                         // create a Vertex String for every possible corner of the tile
-                        String vtx_TL = String.Format("v {0} {1} {2}", (x + 0), layer.z, (y + 0));
-                        String vtx_TR = String.Format("v {0} {1} {2}", (x + 1), layer.z, (y + 0));
-                        String vtx_BL = String.Format("v {0} {1} {2}", (x + 0), layer.z, (y + 1));
-                        String vtx_BR = String.Format("v {0} {1} {2}", (x + 1), layer.z, (y + 1));
+                        String vtx_TL = String.Format("v {0} {1} {2}", (x + 0 - 0.5), layer.z, (y + 0 - 0.5));
+                        String vtx_TR = String.Format("v {0} {1} {2}", (x + 1 - 0.5), layer.z, (y + 0 - 0.5));
+                        String vtx_BL = String.Format("v {0} {1} {2}", (x + 0 - 0.5), layer.z, (y + 1 - 0.5));
+                        String vtx_BR = String.Format("v {0} {1} {2}", (x + 1 - 0.5), layer.z, (y + 1 - 0.5));
                         // and for all elevated corners (for walls)
-                        int elevated_hight = layer.z;
-                        int OBJ_layer_hight = Math.Min(layer.dz, 10); // MAGIC NUMBER (basically determines how high the highest walls are)
-                        elevated_hight += OBJ_layer_hight;
-                        String vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0), elevated_hight, (y + 0));
-                        String vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1), elevated_hight, (y + 0));
-                        String vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0), elevated_hight, (y + 1));
-                        String vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1), elevated_hight, (y + 1));
+                        int elevated_hight = (layer.z + layer.dz);
+                        String vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0 - 0.5), elevated_hight, (y + 0 - 0.5));
+                        String vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1 - 0.5), elevated_hight, (y + 0 - 0.5));
+                        String vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0 - 0.5), elevated_hight, (y + 1 - 0.5));
+                        String vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1 - 0.5), elevated_hight, (y + 1 - 0.5));
 
                         // then we grab the collision ID of the tile
                         int coll_ID = Tile.calc_coll_ID(layer.tile_matrix[x, y]);
@@ -828,14 +893,14 @@ namespace BM64_LevelCreator
                                     float lower_z = layer.z + ((i + 0) * ramp_slope);
                                     float upper_z = layer.z + ((i + 1) * ramp_slope);
 
-                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x + 0), lower_z, (y + i + 0));
-                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x + 1), lower_z, (y + i + 0));
-                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x + 0), lower_z, (y + i + 1));
-                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x + 1), lower_z, (y + i + 1));
-                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0), upper_z, (y + i + 0));
-                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1), upper_z, (y + i + 0));
-                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0), upper_z, (y + i + 1));
-                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1), upper_z, (y + i + 1));
+                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x + 0 - 0.5), lower_z, (y + i + 0 - 0.5));
+                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x + 1 - 0.5), lower_z, (y + i + 0 - 0.5));
+                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x + 0 - 0.5), lower_z, (y + i + 1 - 0.5));
+                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x + 1 - 0.5), lower_z, (y + i + 1 - 0.5));
+                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0 - 0.5), upper_z, (y + i + 0 - 0.5));
+                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1 - 0.5), upper_z, (y + i + 0 - 0.5));
+                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0 - 0.5), upper_z, (y + i + 1 - 0.5));
+                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1 - 0.5), upper_z, (y + i + 1 - 0.5));
                                     // I hate this
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
                                     OBJ_file.WriteLine(string_quad_from_vtx(ramp_vtx_BR_up, ramp_vtx_TR, ramp_vtx_TL, ramp_vtx_BL_up, vtx_cnt, 1));
@@ -866,14 +931,14 @@ namespace BM64_LevelCreator
                                     float lower_z = layer.z + ((i + 0) * ramp_slope);
                                     float upper_z = layer.z + ((i + 1) * ramp_slope);
 
-                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x + 0), lower_z, (y - i + 0));
-                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x + 1), lower_z, (y - i + 0));
-                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x + 0), lower_z, (y - i + 1));
-                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x + 1), lower_z, (y - i + 1));
-                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0), upper_z, (y - i + 0));
-                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1), upper_z, (y - i + 0));
-                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0), upper_z, (y - i + 1));
-                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1), upper_z, (y - i + 1));
+                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x + 0 - 0.5), lower_z, (y - i + 0 - 0.5));
+                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x + 1 - 0.5), lower_z, (y - i + 0 - 0.5));
+                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x + 0 - 0.5), lower_z, (y - i + 1 - 0.5));
+                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x + 1 - 0.5), lower_z, (y - i + 1 - 0.5));
+                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x + 0 - 0.5), upper_z, (y - i + 0 - 0.5));
+                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x + 1 - 0.5), upper_z, (y - i + 0 - 0.5));
+                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + 0 - 0.5), upper_z, (y - i + 1 - 0.5));
+                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + 1 - 0.5), upper_z, (y - i + 1 - 0.5));
                                     // I hate this
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
                                     OBJ_file.WriteLine(string_quad_from_vtx(ramp_vtx_TL_up, ramp_vtx_BL, ramp_vtx_BR, ramp_vtx_TR_up, vtx_cnt, 1));
@@ -904,14 +969,14 @@ namespace BM64_LevelCreator
                                     float lower_z = layer.z + ((i + 0) * ramp_slope);
                                     float upper_z = layer.z + ((i + 1) * ramp_slope);
 
-                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x + i + 0), lower_z, (y + 0));
-                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x + i + 1), lower_z, (y + 0));
-                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x + i + 0), lower_z, (y + 1));
-                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x + i + 1), lower_z, (y + 1));
-                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x + i + 0), upper_z, (y + 0));
-                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x + i + 1), upper_z, (y + 0));
-                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + i + 0), upper_z, (y + 1));
-                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + i + 1), upper_z, (y + 1));
+                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x + i + 0 - 0.5), lower_z, (y + 0 - 0.5));
+                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x + i + 1 - 0.5), lower_z, (y + 0 - 0.5));
+                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x + i + 0 - 0.5), lower_z, (y + 1 - 0.5));
+                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x + i + 1 - 0.5), lower_z, (y + 1 - 0.5));
+                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x + i + 0 - 0.5), upper_z, (y + 0 - 0.5));
+                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x + i + 1 - 0.5), upper_z, (y + 0 - 0.5));
+                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x + i + 0 - 0.5), upper_z, (y + 1 - 0.5));
+                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x + i + 1 - 0.5), upper_z, (y + 1 - 0.5));
                                     // I hate this
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
                                     OBJ_file.WriteLine(string_quad_from_vtx(ramp_vtx_TR_up, ramp_vtx_TL, ramp_vtx_BL, ramp_vtx_BR_up, vtx_cnt, 1));
@@ -942,14 +1007,14 @@ namespace BM64_LevelCreator
                                     float lower_z = layer.z + ((i + 0) * ramp_slope);
                                     float upper_z = layer.z + ((i + 1) * ramp_slope);
 
-                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x - i + 0), lower_z, (y + 0));
-                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x - i + 1), lower_z, (y + 0));
-                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x - i + 0), lower_z, (y + 1));
-                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x - i + 1), lower_z, (y + 1));
-                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x - i + 0), upper_z, (y + 0));
-                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x - i + 1), upper_z, (y + 0));
-                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x - i + 0), upper_z, (y + 1));
-                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x - i + 1), upper_z, (y + 1));
+                                    String ramp_vtx_TL = String.Format("v {0} {1} {2}", (x - i + 0 - 0.5), lower_z, (y + 0 - 0.5));
+                                    String ramp_vtx_TR = String.Format("v {0} {1} {2}", (x - i + 1 - 0.5), lower_z, (y + 0 - 0.5));
+                                    String ramp_vtx_BL = String.Format("v {0} {1} {2}", (x - i + 0 - 0.5), lower_z, (y + 1 - 0.5));
+                                    String ramp_vtx_BR = String.Format("v {0} {1} {2}", (x - i + 1 - 0.5), lower_z, (y + 1 - 0.5));
+                                    String ramp_vtx_TL_up = String.Format("v {0} {1} {2}", (x - i + 0 - 0.5), upper_z, (y + 0 - 0.5));
+                                    String ramp_vtx_TR_up = String.Format("v {0} {1} {2}", (x - i + 1 - 0.5), upper_z, (y + 0 - 0.5));
+                                    String ramp_vtx_BL_up = String.Format("v {0} {1} {2}", (x - i + 0 - 0.5), upper_z, (y + 1 - 0.5));
+                                    String ramp_vtx_BR_up = String.Format("v {0} {1} {2}", (x - i + 1 - 0.5), upper_z, (y + 1 - 0.5));
                                     // I hate this
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
                                     OBJ_file.WriteLine(string_quad_from_vtx(ramp_vtx_BL_up, ramp_vtx_BR, ramp_vtx_TR, ramp_vtx_TL_up, vtx_cnt, 1));
@@ -963,12 +1028,12 @@ namespace BM64_LevelCreator
                                 if (layer.check_RIGHT_neighbor_for(x, y, FloorTiles) || layer.check_SOUTH_neighbor_for(x, y, FloorTiles))
                                 {
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0x1])); // corner floors still use the floor tex
-                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_BL, vtx_BR, vtx_TR, Tile.CollisionID[coll_ID], vtx_cnt));
+                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_TR, vtx_BR, vtx_BL, Tile.CollisionID[coll_ID], vtx_cnt));
                                     vtx_cnt += 3;
                                 }
                                 // add the angled wall
                                 OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF])); // corner walls still use the wall tex
-                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_TR_up, vtx_TR, vtx_BL, vtx_BL_up, vtx_cnt, OBJ_layer_hight));
+                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_TR_up, vtx_TR, vtx_BL, vtx_BL_up, vtx_cnt, layer.dz));
                                 vtx_cnt += 4;
                                 break;
                             case (0x8): // Wall-Corner DL
@@ -976,27 +1041,26 @@ namespace BM64_LevelCreator
                                 if (layer.check_RIGHT_neighbor_for(x, y, FloorTiles) || layer.check_NORTH_neighbor_for(x, y, FloorTiles))
                                 {
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0x1])); // corner floors still use the floor tex
-                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_BR, vtx_TR, vtx_TL, Tile.CollisionID[coll_ID], vtx_cnt));
+                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_BR, vtx_TL, vtx_TR, Tile.CollisionID[coll_ID], vtx_cnt));
                                     vtx_cnt += 3;
                                 }
                                 // add the angled wall
                                 OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF])); // corner walls still use the wall tex
-                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_BR_up, vtx_BR, vtx_TL, vtx_TL_up, vtx_cnt, OBJ_layer_hight));
+                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_BR_up, vtx_BR, vtx_TL, vtx_TL_up, vtx_cnt, layer.dz));
                                 vtx_cnt += 4;
                                 break;
-
 
                             case (0xC): // Wall-Corner UR
                                 // draw the floor tri IFF a floor tile is to the LEFT or DOWN
                                 if (layer.check_LEFT_neighbor_for(x, y, FloorTiles) || layer.check_SOUTH_neighbor_for(x, y, FloorTiles))
                                 {
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0x1])); // corner floors still use the floor tex
-                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_BR, vtx_BL, vtx_TL, Tile.CollisionID[coll_ID], vtx_cnt));
+                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_TL, vtx_BR, vtx_BL, Tile.CollisionID[coll_ID], vtx_cnt));
                                     vtx_cnt += 3;
                                 }
                                 // add the angled wall
                                 OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF])); // corner walls still use the wall tex
-                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_TL_up, vtx_TL, vtx_BR, vtx_BR_up, vtx_cnt, OBJ_layer_hight));
+                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_TL_up, vtx_TL, vtx_BR, vtx_BR_up, vtx_cnt, layer.dz));
                                 vtx_cnt += 4;
                                 break;
                             case (0xD): // Wall-Corner DR
@@ -1004,12 +1068,12 @@ namespace BM64_LevelCreator
                                 if (layer.check_LEFT_neighbor_for(x, y, FloorTiles) || layer.check_NORTH_neighbor_for(x, y, FloorTiles))
                                 {
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0x1])); // corner floors still use the floor tex
-                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_TR, vtx_BL, vtx_TL, Tile.CollisionID[coll_ID], vtx_cnt));
+                                    OBJ_file.WriteLine(string_tri_from_vtx(vtx_TL, vtx_TR, vtx_BL, Tile.CollisionID[coll_ID], vtx_cnt));
                                     vtx_cnt += 3;
                                 }
                                 // add the angled wall
                                 OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[0xF])); // corner walls still use the wall tex
-                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_TR_up, vtx_TR, vtx_BL, vtx_BL_up, vtx_cnt, OBJ_layer_hight));
+                                OBJ_file.WriteLine(string_quad_from_vtx(vtx_BL_up, vtx_BL, vtx_TR, vtx_TR_up, vtx_cnt, layer.dz));
                                 vtx_cnt += 4;
                                 break;
 
@@ -1020,28 +1084,28 @@ namespace BM64_LevelCreator
                                 {
                                     // add the quad that defines a LEFT wall
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
-                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_TL_up, vtx_TL, vtx_BL, vtx_BL_up, vtx_cnt, OBJ_layer_hight));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_TL_up, vtx_TL, vtx_BL, vtx_BL_up, vtx_cnt, layer.dz));
                                     vtx_cnt += 4;
                                 }
                                 if (layer.check_RIGHT_neighbor_for(x, y, UnobstructedTiles))
                                 {
                                     // add the quad that defines a RIGHT wall
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
-                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_BR_up, vtx_BR, vtx_TR, vtx_TR_up, vtx_cnt, OBJ_layer_hight));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_BR_up, vtx_BR, vtx_TR, vtx_TR_up, vtx_cnt, layer.dz));
                                     vtx_cnt += 4;
                                 }
                                 if (layer.check_NORTH_neighbor_for(x, y, UnobstructedTiles))
                                 {
                                     // add the quad that defines a LEFT wall
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
-                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_TR_up, vtx_TR, vtx_TL, vtx_TL_up, vtx_cnt, OBJ_layer_hight));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_TR_up, vtx_TR, vtx_TL, vtx_TL_up, vtx_cnt, layer.dz));
                                     vtx_cnt += 4;
                                 }
                                 if (layer.check_SOUTH_neighbor_for(x, y, UnobstructedTiles))
                                 {
                                     // add the quad that defines a LEFT wall
                                     OBJ_file.WriteLine(String.Format("usemtl {0}", Tile.CollisionID[coll_ID]));
-                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_BL_up, vtx_BL, vtx_BR, vtx_BR_up, vtx_cnt, OBJ_layer_hight));
+                                    OBJ_file.WriteLine(string_quad_from_vtx(vtx_BL_up, vtx_BL, vtx_BR, vtx_BR_up, vtx_cnt, layer.dz));
                                     vtx_cnt += 4;
                                 }
                                 // checking if I should draw a CEILING UNDER the wall aswell
