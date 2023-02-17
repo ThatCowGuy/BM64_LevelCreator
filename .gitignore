@@ -11,6 +11,7 @@ BM64_Dump/
 *.obj
 *.mtl
 *.blend
+F3D_Export/
 ## ASM stuff
 *.asm
 !MinimalLevelTemplate.asm
