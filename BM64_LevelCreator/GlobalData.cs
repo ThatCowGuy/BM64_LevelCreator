@@ -24,9 +24,9 @@ namespace BM64_LevelCreator
         public static readonly string RipperPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "deps\\bm64romtool.exe");
 
         // where the ripped files go to
-        public static string BM64_DataDir = "../../../bm64data";
+        public static string BM64_DataDir = "./bm64data";
 
-        public static string BM64_CollisionDir = "../../../bm64data/data/";
+        public static string BM64_CollisionDir = "./bm64data/data/";
         // https://github.com/Coockie1173/BomerhackerThree/blob/main/FileList.txt
         // this dict is sorted by internal file order
         /*public static Dictionary<String, String> collision_files = new Dictionary<string, string>()

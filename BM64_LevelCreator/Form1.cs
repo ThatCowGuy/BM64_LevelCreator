@@ -133,6 +133,8 @@ namespace BM64_LevelCreator
             if (select_x >= Section.DIM) return;
             if (select_y >= Section.DIM) return;
 
+            XYPosition.Text = $"{(select_x + selected_section_x * 8).ToString("X")},{(select_y + selected_section_y * 8).ToString("X")}";
+
             // translating the results
             int sel_section_index = (current_map.layers[selected_layer].x_extent * selected_section_y) + selected_section_x;
 
@@ -194,6 +196,8 @@ namespace BM64_LevelCreator
         {
             int select_x = (int)(e.X / Tile.DIM);
             int select_y = (int)(e.Y / Tile.DIM);
+
+            XYPosition.Text = $"{(select_x + selected_section_x * 8).ToString("X")},{(select_y + selected_section_y * 8).ToString("X")}";
 
             // some OOB checks
             if (select_x >= 2) return;

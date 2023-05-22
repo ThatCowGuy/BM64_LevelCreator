@@ -57,41 +57,41 @@ namespace BM64_LevelCreator
         public static void init_images() // now sorted by the actual nibble value of the coll ID
         {
             Size imgSize = new Size(Tile.DIM, Tile.DIM);
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Air.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Floor.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Warp.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampD.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampU.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampR.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/RampL.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_UL.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_DL.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/KillZone.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Effect_1.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Effect_2.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_UR.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/WallCorner_DR.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/UNK_0xE.png"), imgSize));
-            std_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Wall.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/Air.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/Floor.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/Warp.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/RampD.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/RampU.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/RampR.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/RampL.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/WallCorner_UL.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/WallCorner_DL.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/KillZone.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/Effect_1.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/Effect_2.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/WallCorner_UR.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/WallCorner_DR.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/UNK_0xE.png"), imgSize));
+            std_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/Wall.png"), imgSize));
 
-            obj_images.Add(new Bitmap(Bitmap.FromFile("../../assets/images/Object.png"), imgSize));
+            obj_images.Add(new Bitmap(Bitmap.FromFile("./assets/images/Object.png"), imgSize));
 
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/Floor.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/Warp.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/RampD.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/KillZone.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/Effect_1.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/Effect_2.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/UNK_0xE.png");
-            tex_image_paths.Add("BM64_LevelCreator/assets/images/Wall.png");
-            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[0]), imgSize));
-            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[1]), imgSize));
-            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[2]), imgSize));
-            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[3]), imgSize));
-            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[4]), imgSize));
-            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[5]), imgSize));
-            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[6]), imgSize));
-            tex_images.Add(new Bitmap(Bitmap.FromFile("../../../" + Tile.tex_image_paths[7]), imgSize));
+            tex_image_paths.Add("./assets/images/Floor.png");
+            tex_image_paths.Add("./assets/images/Warp.png");
+            tex_image_paths.Add("./assets/images/RampD.png");
+            tex_image_paths.Add("./assets/images/KillZone.png");
+            tex_image_paths.Add("./assets/images/Effect_1.png");
+            tex_image_paths.Add("./assets/images/Effect_2.png");
+            tex_image_paths.Add("./assets/images/UNK_0xE.png");
+            tex_image_paths.Add("./assets/images/Wall.png");
+            tex_images.Add(new Bitmap(Bitmap.FromFile("./" + Tile.tex_image_paths[0]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("./" + Tile.tex_image_paths[1]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("./" + Tile.tex_image_paths[2]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("./" + Tile.tex_image_paths[3]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("./" + Tile.tex_image_paths[4]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("./" + Tile.tex_image_paths[5]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("./" + Tile.tex_image_paths[6]), imgSize));
+            tex_images.Add(new Bitmap(Bitmap.FromFile("./" + Tile.tex_image_paths[7]), imgSize));
         }
 
         public static void change_texture(int ID, string new_path)
@@ -105,7 +105,7 @@ namespace BM64_LevelCreator
         {
             System.Console.WriteLine("Reading TexConfig-FILE...");
 
-            string TexConfig_filename = "../../../USER_TEX.conf";
+            string TexConfig_filename = "./USER_TEX.conf";
             if (System.IO.File.Exists(TexConfig_filename) == false) return;
 
             int count = 0;
@@ -126,7 +126,7 @@ namespace BM64_LevelCreator
         public static void dump_tex_config_file()
         {
             System.Console.WriteLine("Dumping TexConfig-FILE...");
-            string TexConfig_filename = "../../../USER_TEX.conf";
+            string TexConfig_filename = "./USER_TEX.conf";
             System.IO.StreamWriter CONF_file = new System.IO.StreamWriter(System.IO.File.Open(TexConfig_filename, System.IO.FileMode.Create));
             CONF_file.Flush();
 
@@ -711,14 +711,14 @@ namespace BM64_LevelCreator
         public void dump_ASM()
         {
             // pop open the new ASM file (can autogen the name actually)
-            string ASM_filename = String.Format("../../../model_{0}.asm", this.model_file_ID);
+            string ASM_filename = String.Format("./model_{0}.asm", this.model_file_ID);
             System.Console.WriteLine("Generating ASM-FILE...");
             System.IO.StreamWriter ASM_file = new System.IO.StreamWriter(System.IO.File.Open(ASM_filename, System.IO.FileMode.Create));
             ASM_file.Flush();
 
             // Read the Template ASM file and transfer it line by line, while inserting missing information
             int line_cnt = 0;
-            foreach (string line in System.IO.File.ReadLines("../../../MinimalLevelTemplate.asm"))
+            foreach (string line in System.IO.File.ReadLines("./MinimalLevelTemplate.asm"))
             {
                 switch (line_cnt++)
                 {

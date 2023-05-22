@@ -31,6 +31,11 @@ namespace BM64_LevelCreator
         {
             this.MapViewPanel = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.button2 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.ExpandY_Button = new System.Windows.Forms.Button();
+            this.ExpandX_Button = new System.Windows.Forms.Button();
             this.LayerView_Zoom_PicBox = new System.Windows.Forms.PictureBox();
             this.MapView_DPad_PicBox = new System.Windows.Forms.PictureBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -63,17 +68,13 @@ namespace BM64_LevelCreator
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
             this.Export2OBJ_Button = new System.Windows.Forms.Button();
             this.BuildROM_Button = new System.Windows.Forms.Button();
             this.MapNames_ComboBox = new System.Windows.Forms.ComboBox();
             this.RipFiles_Button = new System.Windows.Forms.Button();
             this.SaveMapFile_Button = new System.Windows.Forms.Button();
-            this.ExpandX_Button = new System.Windows.Forms.Button();
-            this.ExpandY_Button = new System.Windows.Forms.Button();
-            this.label13 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.XYPosition = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LayerView_Zoom_PicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MapView_DPad_PicBox)).BeginInit();
@@ -120,6 +121,56 @@ namespace BM64_LevelCreator
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(359, 485);
             this.panel2.TabIndex = 1;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(282, 105);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(61, 23);
+            this.button2.TabIndex = 14;
+            this.button2.Text = "+ Layer";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(282, 74);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(61, 20);
+            this.textBox1.TabIndex = 10;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label13.Location = new System.Drawing.Point(279, 55);
+            this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(72, 17);
+            this.label13.TabIndex = 13;
+            this.label13.Text = "Hight (dZ)";
+            // 
+            // ExpandY_Button
+            // 
+            this.ExpandY_Button.Location = new System.Drawing.Point(282, 290);
+            this.ExpandY_Button.Name = "ExpandY_Button";
+            this.ExpandY_Button.Size = new System.Drawing.Size(61, 23);
+            this.ExpandY_Button.TabIndex = 12;
+            this.ExpandY_Button.Text = "Expand Y";
+            this.ExpandY_Button.UseVisualStyleBackColor = true;
+            this.ExpandY_Button.Click += new System.EventHandler(this.ExpandY_Button_Click);
+            // 
+            // ExpandX_Button
+            // 
+            this.ExpandX_Button.Location = new System.Drawing.Point(282, 261);
+            this.ExpandX_Button.Name = "ExpandX_Button";
+            this.ExpandX_Button.Size = new System.Drawing.Size(61, 23);
+            this.ExpandX_Button.TabIndex = 11;
+            this.ExpandX_Button.Text = "Expand X";
+            this.ExpandX_Button.UseVisualStyleBackColor = true;
+            this.ExpandX_Button.Click += new System.EventHandler(this.ExpandX_Button_Click);
             // 
             // LayerView_Zoom_PicBox
             // 
@@ -377,6 +428,7 @@ namespace BM64_LevelCreator
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.Transparent;
+            this.panel3.Controls.Add(this.XYPosition);
             this.panel3.Controls.Add(this.ObjectID_TextBox);
             this.panel3.Controls.Add(this.textBox2);
             this.panel3.Controls.Add(this.EnemyID_TextBox);
@@ -385,7 +437,7 @@ namespace BM64_LevelCreator
             this.panel3.Controls.Add(this.label10);
             this.panel3.Location = new System.Drawing.Point(10, 64);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(182, 76);
+            this.panel3.Size = new System.Drawing.Size(242, 76);
             this.panel3.TabIndex = 3;
             // 
             // ObjectID_TextBox
@@ -486,6 +538,18 @@ namespace BM64_LevelCreator
             this.panel1.Size = new System.Drawing.Size(741, 39);
             this.panel1.TabIndex = 6;
             // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(619, 5);
+            this.button3.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(71, 24);
+            this.button3.TabIndex = 10;
+            this.button3.Text = "Export ASM";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // Export2OBJ_Button
             // 
             this.Export2OBJ_Button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -538,67 +602,14 @@ namespace BM64_LevelCreator
             this.SaveMapFile_Button.UseVisualStyleBackColor = true;
             this.SaveMapFile_Button.Click += new System.EventHandler(this.SaveMapFile_Button_Click_1);
             // 
-            // ExpandX_Button
+            // XYPosition
             // 
-            this.ExpandX_Button.Location = new System.Drawing.Point(282, 261);
-            this.ExpandX_Button.Name = "ExpandX_Button";
-            this.ExpandX_Button.Size = new System.Drawing.Size(61, 23);
-            this.ExpandX_Button.TabIndex = 11;
-            this.ExpandX_Button.Text = "Expand X";
-            this.ExpandX_Button.UseVisualStyleBackColor = true;
-            this.ExpandX_Button.Click += new System.EventHandler(this.ExpandX_Button_Click);
-            // 
-            // ExpandY_Button
-            // 
-            this.ExpandY_Button.Location = new System.Drawing.Point(282, 290);
-            this.ExpandY_Button.Name = "ExpandY_Button";
-            this.ExpandY_Button.Size = new System.Drawing.Size(61, 23);
-            this.ExpandY_Button.TabIndex = 12;
-            this.ExpandY_Button.Text = "Expand Y";
-            this.ExpandY_Button.UseVisualStyleBackColor = true;
-            this.ExpandY_Button.Click += new System.EventHandler(this.ExpandY_Button_Click);
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label13.Location = new System.Drawing.Point(279, 55);
-            this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(72, 17);
-            this.label13.TabIndex = 13;
-            this.label13.Text = "Hight (dZ)";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(282, 74);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(61, 20);
-            this.textBox1.TabIndex = 10;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(282, 105);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(61, 23);
-            this.button2.TabIndex = 14;
-            this.button2.Text = "+ Layer";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(619, 5);
-            this.button3.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(71, 24);
-            this.button3.TabIndex = 10;
-            this.button3.Text = "Export ASM";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.XYPosition.AutoSize = true;
+            this.XYPosition.Location = new System.Drawing.Point(128, 50);
+            this.XYPosition.Name = "XYPosition";
+            this.XYPosition.Size = new System.Drawing.Size(22, 13);
+            this.XYPosition.TabIndex = 10;
+            this.XYPosition.Text = "0.0";
             // 
             // Form1
             // 
@@ -677,6 +688,7 @@ namespace BM64_LevelCreator
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label XYPosition;
     }
 }
 
