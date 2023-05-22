@@ -37,3 +37,7 @@ C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\deps\B
 C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\deps\bm64romtool.exe
 C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\deps\BombermanObjectCompiler.dll
 C:\Users\cray4\source\repos\BM64_LevelCreator\BM64_LevelCreator\bin\Debug\deps\BombermanObjectCompiler.exe
+D:\n64\BomberMan\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.csproj.AssemblyReference.cache
+D:\n64\BomberMan\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.csproj.SuggestedBindingRedirects.cache
+D:\n64\BomberMan\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.exe
+D:\n64\BomberMan\BM64_LevelCreator\BM64_LevelCreator\obj\Debug\BM64_LevelCreator.pdb
